@@ -161,14 +161,22 @@
         try {
             const response = await fetch(url);
             const text = await response.text();
+            
+            // Debug 1: Vediamo se il testo arriva da Google
+            console.log("Testo grezzo ricevuto (primi 100 caratteri):", text.substring(0, 100));
+
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
 
-            // Mappatura: Saltiamo la riga 0 (intestazioni). 
-            // Ordine: A=ID(0), B=Nome(1), C=Soprannome(2), D=Stirpe(3), E=Professione(4), F=Età(5)...
+            // Debug 2: Quante righe totali vede lo script?
+            console.log("Numero totale di righe trovate nel foglio:", rows.length);
+
             characters = rows.slice(1).map((row, index) => {
                 const c = row.c;
                 const v = (i) => (c && c[i] && c[i].v !== null) ? c[i].v : "";
+
+                // Debug 3: Vediamo cosa legge in ogni riga specifica
+                console.log(`Riga ${index + 2} - ID: "${v(0)}", Nome: "${v(1)}"`);
 
                 return {
                     id: v(0),
@@ -192,19 +200,26 @@
                     acume: v(20),
                     empatia: v(21),
                     abilita: {
-                        "Artigianato (Fo)": v(22), "Mischia (Fo)": v(23), "Resistenza (Fo)": v(24), "Vigore (Fo)": v(25),
-                        "Furtività (Ag)": v(26), "Mira (Ag)": v(27), "Movimento (Ag)": v(28), "Rapidità (Ag)": v(29),
-                        "Erudizione (Ac)": v(30), "Intuito (Ac)": v(31), "Percezione (Ac)": v(32), "Sopravvivenza (Ac)": v(33),
-                        "Addestramento (Em)": v(34), "Esibizione (Em)": v(35), "Guarigione (Em)": v(36), "Persuasione (Em)": v(37)
+                        "Artigianato": v(22), "Mischia": v(23), "Resistenza": v(24), "Vigore": v(25),
+                        "Furtività": v(26), "Mira": v(27), "Movimento": v(28), "Rapidità": v(29),
+                        "Erudizione": v(30), "Intuito": v(31), "Percezione": v(32), "Sopravvivenza": v(33),
+                        "Addestramento": v(34), "Esibizione": v(35), "Guarigione": v(36), "Persuasione": v(37)
                     }
                 };
-            }).filter(char => char.nome !== "");
+            }).filter(char => {
+                // Debug 4: Perché un personaggio viene scartato?
+                const keeps = char.nome !== "";
+                if (!keeps) console.warn("Rilevata riga vuota o senza nome, scartata.");
+                return keeps;
+            });
+
+            console.log("Personaggi validi pronti per la visualizzazione:", characters.length);
 
             renderMaster();
             document.getElementById('loader').style.display = 'none';
         } catch (e) {
-            document.getElementById('loader').innerHTML = "Errore: Impossibile leggere il Libro Mastro.";
-            console.error(e);
+            document.getElementById('loader').innerHTML = "Errore durante il caricamento. Controlla la console (F12).";
+            console.error("ERRORE CRITICO:", e);
         }
     }
 
