@@ -153,30 +153,24 @@
 </div>
 
 <script>
+    // Aggiungiamo &headers=1 per obbligare Google a vedere la riga 2 come DATI
     const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1`;
     
     async function init() {
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-        
         try {
             const response = await fetch(url);
             const text = await response.text();
-            
-            // Debug 1: Vediamo se il testo arriva da Google
-            console.log("Testo grezzo ricevuto (primi 100 caratteri):", text.substring(0, 100));
-
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
 
-            // Debug 2: Quante righe totali vede lo script?
-            console.log("Numero totale di righe trovate nel foglio:", rows.length);
+            console.log("Righe totali ricevute da Google:", rows.length);
 
-            characters = rows.slice(1).map((row, index) => {
+            // IMPORTANTE: Con &headers=1, Google ci manda SOLO i dati. 
+            // Quindi NON usiamo più .slice(1), altrimenti salteremmo di nuovo il primo PG!
+            characters = rows.map((row, index) => {
                 const c = row.c;
                 const v = (i) => (c && c[i] && c[i].v !== null) ? c[i].v : "";
-
-                // Debug 3: Vediamo cosa legge in ogni riga specifica
-                console.log(`Riga ${index + 2} - ID: "${v(0)}", Nome: "${v(1)}"`);
 
                 return {
                     id: v(0),
@@ -206,20 +200,13 @@
                         "Addestramento": v(34), "Esibizione": v(35), "Guarigione": v(36), "Persuasione": v(37)
                     }
                 };
-            }).filter(char => {
-                // Debug 4: Perché un personaggio viene scartato?
-                const keeps = char.nome !== "";
-                if (!keeps) console.warn("Rilevata riga vuota o senza nome, scartata.");
-                return keeps;
-            });
-
-            console.log("Personaggi validi pronti per la visualizzazione:", characters.length);
+            }).filter(char => char.nome !== ""); // Rimuove eventuali righe vuote in fondo
 
             renderMaster();
             document.getElementById('loader').style.display = 'none';
         } catch (e) {
-            document.getElementById('loader').innerHTML = "Errore durante il caricamento. Controlla la console (F12).";
-            console.error("ERRORE CRITICO:", e);
+            document.getElementById('loader').innerHTML = "Errore nel caricamento dei dati.";
+            console.error("Dettaglio errore:", e);
         }
     }
 
@@ -229,16 +216,16 @@
             <div class="char-card" onclick="showDetail('${c.id}')">
                 <h2>${c.nome}</h2>
                 <p>${c.soprannome}</p>
-                <div style="margin-top:10px; font-weight:bold; color:var(--teal)">${c.stirpe} ${c.professione}</div>
+                <div style="margin-top:10px; color:var(--teal)">${c.stirpe} ${c.professione}</div>
             </div>
         `).join('');
     }
 
     function showDetail(id) {
         const c = characters.find(x => x.id == id);
-        const content = document.getElementById('sheet-content');
+        if (!c) return;
         
-        // Filtro abilità con valore > 0
+        const content = document.getElementById('sheet-content');
         const skillHtml = Object.entries(c.abilita)
             .filter(([_, val]) => val !== "" && val > 0)
             .map(([name, val]) => `<div class="skill-item"><span>${name}</span><span>${val}</span></div>`)
@@ -250,13 +237,11 @@
                 <h2 style="font-style:italic; opacity:0.8">${c.soprannome}</h2>
                 <p style="font-size:1.3rem"><strong>${c.stirpe}</strong> — <strong>${c.professione}</strong> — Età: ${c.eta}</p>
             </div>
-
             <div class="values-bar">
                 <div class="val-item"><span class="val-num">${c.volonta}</span>VOLONTÀ</div>
                 <div class="val-item"><span class="val-num">${c.esperienza}</span>ESPERIENZA</div>
                 <div class="val-item"><span class="val-num">${c.reputazione}</span>REPUTAZIONE</div>
             </div>
-
             <div class="sheet-body">
                 <div class="left-col">
                     <div class="attr-grid">
@@ -265,39 +250,28 @@
                         <div class="attr-box"><span class="attr-label">Acume</span><span class="attr-val">${c.acume}</span></div>
                         <div class="attr-box"><span class="attr-label">Empatia</span><span class="attr-val">${c.empatia}</span></div>
                     </div>
-
                     <div class="box">
                         <h4>Abilità Addestrate</h4>
                         <div class="skill-grid">${skillHtml || 'Nessuna abilità particolare.'}</div>
                     </div>
-
                     <div class="box">
                         <h4>Doti e Talenti</h4>
-                        <p><strong>Dote di Stirpe:</strong> ${c.doteStirpe}</p>
+                        <p><strong>Dote Stirpe:</strong> ${c.doteStirpe}</p>
                         <p><strong>Sentiero:</strong> ${c.doteSentiero}</p>
-                        <p><strong>Altre Doti:</strong> ${c.dotiAltro.join(", ") || "-"}</p>
+                        <p><strong>Altre:</strong> ${c.dotiAltro.join(", ") || "-"}</p>
                     </div>
-
                     <div class="box">
-                        <h4>Cronache e Background</h4>
+                        <h4>Cronache</h4>
                         <p style="white-space: pre-wrap;">${c.background}</p>
                     </div>
                 </div>
-
                 <div class="right-col">
-                    <img src="${c.ritratto || 'https://via.placeholder.com/300x400?text=Ritratto'}" class="portrait">
-                    <div class="box">
-                        <h4>Orgoglio</h4>
-                        <p><em>"${c.orgoglio}"</em></p>
-                    </div>
-                    <div class="box">
-                        <h4>Segreto Oscuro</h4>
-                        <p><em>"${c.segreto}"</em></p>
-                    </div>
+                    <img src="${c.ritratto || 'https://via.placeholder.com/300x400'}" class="portrait">
+                    <div class="box"><h4>Orgoglio</h4><p><em>"${c.orgoglio}"</em></p></div>
+                    <div class="box"><h4>Segreto</h4><p><em>"${c.segreto}"</em></p></div>
                 </div>
             </div>
         `;
-
         document.getElementById('master-list').style.display = 'none';
         document.getElementById('main-header').style.display = 'none';
         document.getElementById('detail-view').style.display = 'block';
