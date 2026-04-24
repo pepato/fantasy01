@@ -3,110 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forbidden Lands - Archivio Avventurieri</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Metamorphous&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet">
+    <title>Forbidden Lands - Compendio Avventurieri</title>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+DW+Pica&family=Special+Elite&display=swap" rel="stylesheet">
     <style>
         :root {
-            --parchment: #f4e4bc;
-            --leather: #3d2b1f;
-            --gold: #c5a059;
+            --dark-green: #1b261d;
+            --blood-red: #660000;
+            --brown: #3d2b1f;
+            --teal: #2d5a5a;
+            --parchment: #d9cbb3;
             --ink: #1a1a1a;
-            --blood: #8b0000;
+            --gold: #b08d57;
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            background-color: #121212;
+            background-color: #0d0d0d;
+            background-image: url("https://www.transparenttextures.com/patterns/dark-leather.png");
             color: var(--ink);
-            font-family: 'Quattrocento', serif;
+            font-family: 'IM Fell DW Pica', serif;
             margin: 0; padding: 20px;
+            line-height: 1.4;
         }
 
-        header { text-align: center; color: var(--gold); margin-bottom: 40px; }
-        header h1 { font-family: 'Cinzel', serif; font-size: 3rem; margin: 0; }
+        h1, h2, h3, h4 { font-family: 'IM Fell English SC', serif; text-transform: uppercase; }
 
-        /* GRIGLIA PRINCIPALE */
-        #master-grid {
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header { text-align: center; color: var(--gold); margin-bottom: 40px; border-bottom: 2px solid var(--blood-red); padding-bottom: 20px; }
+        header h1 { font-size: 3.5rem; margin: 0; letter-spacing: 2px; }
+
+        /* LISTA PERSONAGGI (MASTER) */
+        #master-list {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
+            gap: 20px;
         }
 
         .char-card {
             background: var(--parchment);
-            border: 5px solid var(--leather);
+            border: 4px solid var(--brown);
             padding: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: 0.3s;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
         }
 
-        .char-card:hover { transform: translateY(-10px); border-color: var(--gold); }
-        .char-card h2 { font-family: 'Cinzel', serif; margin: 5px 0; color: var(--blood); border-bottom: 2px solid var(--leather); }
-        
-        /* OVERLAY DETTAGLIO */
-        #detail-overlay {
+        .char-card:hover { transform: translateY(-5px); border-color: var(--teal); box-shadow: 0 15px 30px rgba(0,0,0,0.7); }
+        .char-card h2 { margin: 0; color: var(--blood-red); font-size: 1.8rem; }
+        .char-card p { margin: 5px 0; font-style: italic; color: #444; }
+
+        /* DETTAGLIO PERSONAGGIO (DETAIL) */
+        #detail-view {
             display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .sheet {
             background: var(--parchment);
-            width: 95%; max-width: 900px;
-            margin: 40px auto;
-            padding: 30px;
-            border: 12px solid var(--leather);
+            border: 10px solid var(--brown);
+            padding: 40px;
             box-shadow: 0 0 50px black;
+            position: relative;
+            background-image: url("https://www.transparenttextures.com/patterns/paper.png");
         }
 
-        .close-btn { float: right; font-size: 2.5rem; cursor: pointer; font-family: 'Cinzel'; }
+        .back-btn {
+            background: var(--blood-red); color: white; border: none; padding: 10px 20px;
+            font-family: 'IM Fell English SC'; cursor: pointer; margin-bottom: 20px;
+        }
 
-        /* SEZIONI SCHEDA */
-        .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
-        .stat-box { background: rgba(0,0,0,0.05); border: 1px solid var(--leather); text-align: center; padding: 10px; }
-        .stat-label { display: block; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; }
-        .stat-val { font-size: 1.8rem; font-family: 'Metamorphous'; color: var(--blood); }
+        /* LAYOUT SCHEDA */
+        .sheet-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+        
+        .identity-header { border-bottom: 3px solid var(--ink); margin-bottom: 20px; }
+        .identity-header h1 { font-size: 3rem; margin: 0; color: var(--blood-red); }
+        .subtitle { font-size: 1.5rem; font-style: italic; margin-top: -10px; display: block; }
 
-        .info-section { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
-        .box { border-top: 2px solid var(--leather); padding-top: 10px; }
-        .box h4 { font-family: 'Cinzel'; margin: 0 0 10px 0; color: var(--leather); }
+        .attr-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            margin: 20px 0; background: var(--dark-green); padding: 15px; border-radius: 5px;
+        }
+        .attr-box { text-align: center; color: white; }
+        .attr-label { display: block; font-size: 0.8rem; text-transform: uppercase; color: var(--gold); }
+        .attr-val { font-size: 2.2rem; font-weight: bold; font-family: 'Special Elite', cursive; }
 
-        .loading { color: var(--gold); text-align: center; padding: 100px; font-size: 1.5rem; font-family: 'Cinzel'; }
+        .values-row { display: flex; justify-content: space-around; background: var(--teal); color: white; padding: 10px; margin-bottom: 20px; }
+        .value-item { text-align: center; }
+
+        .box { border: 1px solid var(--brown); padding: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.03); }
+        .box h4 { margin: 0 0 10px 0; border-bottom: 1px solid var(--brown); color: var(--brown); }
+
+        .skills-list { columns: 2; font-family: 'Special Elite', monospace; font-size: 0.9rem; }
+        .skill-item { display: flex; justify-content: space-between; border-bottom: 1px dotted #999; margin-bottom: 4px; }
+
+        .portrait { width: 100%; border: 5px solid var(--brown); filter: sepia(0.5) contrast(1.2); margin-bottom: 20px; }
+
+        .loading { text-align: center; color: var(--gold); font-size: 2rem; padding: 50px; }
+
+        @media (max-width: 768px) { .sheet-grid { grid-template-columns: 1fr; } .attr-grid { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>Forbidden Lands</h1>
-    <p>Compendio degli Eroi della Landa</p>
-</header>
+<div class="container">
+    <header id="main-header">
+        <h1>Forbidden Lands</h1>
+        <p>Cronache e Leggende della Terra Proibita</p>
+    </header>
 
-<div id="loader" class="loading">Srotolando le pergamene dei dati...</div>
-<div id="master-grid"></div>
+    <div id="loader" class="loading">Consultando gli antichi tomi...</div>
 
-<div id="detail-overlay">
-    <div class="sheet">
-        <span class="close-btn" onclick="closeSheet()">&times;</span>
+    <div id="master-list"></div>
+
+    <div id="detail-view">
+        <button class="back-btn" onclick="showMaster()">← Torna all'elenco</button>
         <div id="sheet-content"></div>
     </div>
 </div>
 
 <script>
     const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
-    const TAB_NAME = 'Personaggio'; // Cambia in 'Foglio1' se necessario
+    const TAB_NAME = 'Personaggi FL';
 
     let characters = [];
 
-    async function loadData() {
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${TAB_NAME}`;
+    async function init() {
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(TAB_NAME)}`;
         
         try {
             const response = await fetch(url);
@@ -114,96 +136,142 @@
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const rows = json.table.rows;
 
-            // Mappatura delle colonne basata sulla tua nuova struttura
-            characters = rows.map((row, i) => {
-                const c = row.c;
+            // MAPPATURA DATI (Regola i numeri [X] se le colonne cambiano)
+            // r.c[X] corrisponde alla colonna (0=A, 1=B, 2=C...)
+            characters = rows.slice(2).map((r, index) => {
+                const d = r.c;
                 return {
-                    id: i,
-                    nome: c[1] ? c[1].v : "Eroe Ignoto",
-                    stirpe: c[2] ? c[2].v : "-",
-                    professione: c[3] ? c[3].v : "-",
-                    eta: c[4] ? c[4].v : "-",
-                    forza: c[5] ? c[5].v : 0,
-                    agilita: c[6] ? c[6].v : 0,
-                    acume: c[7] ? c[7].v : 0,
-                    empatia: c[8] ? c[8].v : 0,
-                    orgoglio: c[9] ? c[9].v : "-",
-                    segreto: c[10] ? c[10].v : "-",
-                    reputazione: c[11] ? c[11].v : 0,
-                    volonta: c[12] ? c[12].v : 0,
-                    esperto: c[13] ? c[13].v : "-"
+                    id: index,
+                    // Identità
+                    nome: d[0]?.v || "Ignoto",
+                    soprannome: d[1]?.v || "",
+                    stirpe: d[2]?.v || "-",
+                    professione: d[3]?.v || "-",
+                    // Personalità
+                    eta: d[4]?.v || "-",
+                    orgoglio: d[5]?.v || "-",
+                    segreto: d[6]?.v || "-",
+                    background: d[7]?.v || "",
+                    ritratto: d[8]?.v || "https://via.placeholder.com/300x400?text=No+Image",
+                    // Valori
+                    volonta: d[9]?.v || 0,
+                    esperienza: d[10]?.v || 0,
+                    reputazione: d[11]?.v || 0,
+                    // Doti
+                    doteStirpe: d[12]?.v || "-",
+                    sentiero: d[13]?.v || "-",
+                    dotiGen: [d[14]?.v, d[15]?.v, d[16]?.v].filter(x => x),
+                    // Attributi
+                    forza: d[17]?.v || 0,
+                    agilita: d[18]?.v || 0,
+                    acume: d[19]?.v || 0,
+                    empatia: d[20]?.v || 0,
+                    // Abilità (Mappa delle 12 abilità)
+                    abilita: {
+                        "Artigianato": d[21]?.v, "Mischia": d[22]?.v, "Resistenza": d[23]?.v, "Vigore": d[24]?.v,
+                        "Furtività": d[25]?.v, "Mira": d[26]?.v, "Movimento": d[27]?.v, "Rapidità": d[28]?.v,
+                        "Erudizione": d[29]?.v, "Intuito": d[30]?.v, "Percezione": d[31]?.v, "Sopravvivenza": d[32]?.v
+                    }
                 };
             });
 
-            renderGrid();
+            renderMaster();
             document.getElementById('loader').style.display = 'none';
         } catch (e) {
-            document.getElementById('loader').innerHTML = "Errore: Assicurati che il foglio sia 'Pubblicato sul Web'";
+            document.getElementById('loader').innerHTML = "Errore nel caricamento. Verifica che il foglio sia pubblico.";
+            console.error(e);
         }
     }
 
-    function renderGrid() {
-        const grid = document.getElementById('master-grid');
-        grid.innerHTML = characters.map(c => `
-            <div class="char-card" onclick="openSheet(${c.id})">
-                <div>
-                    <h2>${c.nome}</h2>
-                    <p><strong>${c.stirpe}</strong> - ${c.professione}</p>
-                </div>
-                <div style="font-size: 0.8rem; font-style: italic; border-top: 1px solid #ccc; padding-top: 5px;">
-                    Clicca per i dettagli...
-                </div>
+    function renderMaster() {
+        const list = document.getElementById('master-list');
+        list.innerHTML = characters.map(c => `
+            <div class="char-card" onclick="showDetail(${c.id})">
+                <h2>${c.nome}</h2>
+                <p>${c.soprannome}</p>
+                <div style="margin-top:10px; font-weight:bold; color:var(--teal)">${c.stirpe} ${c.professione}</div>
             </div>
         `).join('');
     }
 
-    function openSheet(id) {
+    function showDetail(id) {
         const c = characters.find(x => x.id === id);
         const content = document.getElementById('sheet-content');
         
+        // Filtro abilità > 0
+        const skillHtml = Object.entries(c.abilita)
+            .filter(([_, val]) => val && val > 0)
+            .map(([name, val]) => `<div class="skill-item"><span>${name}</span><span>${val}</span></div>`)
+            .join('');
+
         content.innerHTML = `
-            <div style="border-bottom: 4px solid var(--leather); margin-bottom: 20px;">
-                <h1 style="font-family: 'Cinzel'; margin: 0; color: var(--blood);">${c.nome}</h1>
-                <p style="font-size: 1.2rem;">${c.stirpe} ${c.professione} | Età: ${c.eta} | Reputazione: ${c.reputazione}</p>
+            <div class="identity-header">
+                <h1>${c.nome}</h1>
+                <span class="subtitle">${c.soprannome}</span>
+                <p><strong>${c.stirpe}</strong> ${c.professione} | Età: ${c.eta}</p>
             </div>
 
-            <div class="grid-stats">
-                <div class="stat-box"><span class="stat-label">Forza</span><span class="stat-val">${c.forza}</span></div>
-                <div class="stat-box"><span class="stat-label">Agilità</span><span class="stat-val">${c.agilita}</span></div>
-                <div class="stat-box"><span class="stat-label">Acume</span><span class="stat-val">${c.acume}</span></div>
-                <div class="stat-box"><span class="stat-label">Empatia</span><span class="stat-val">${c.empatia}</span></div>
+            <div class="values-row">
+                <div class="value-item"><small>VOLONTÀ</small><br><strong>${c.volonta}</strong></div>
+                <div class="value-item"><small>ESPERIENZA</small><br><strong>${c.esperienza}</strong></div>
+                <div class="value-item"><small>REPUTAZIONE</small><br><strong>${c.reputazione}</strong></div>
             </div>
 
-            <div class="info-section">
-                <div class="box">
-                    <h4>Orgoglio</h4>
-                    <p>"${c.orgoglio}"</p>
-                </div>
-                <div class="box">
-                    <h4>Punti Volontà</h4>
-                    <div class="stat-val" style="font-size: 3rem; text-align: center;">${c.volonta}</div>
-                </div>
-            </div>
+            <div class="sheet-grid">
+                <div class="main-col">
+                    <div class="attr-grid">
+                        <div class="attr-box"><span class="attr-label">Forza</span><span class="attr-val">${c.forza}</span></div>
+                        <div class="attr-box"><span class="attr-label">Agilità</span><span class="attr-val">${c.agilita}</span></div>
+                        <div class="attr-box"><span class="attr-label">Acume</span><span class="attr-val">${c.acume}</span></div>
+                        <div class="attr-box"><span class="attr-label">Empatia</span><span class="attr-val">${c.empatia}</span></div>
+                    </div>
 
-            <div class="info-section">
-                <div class="box">
-                    <h4>Segreto Oscuro</h4>
-                    <p>${c.segreto}</p>
+                    <div class="box">
+                        <h4>Abilità</h4>
+                        <div class="skills-list">${skillHtml || 'Nessuna abilità addestrata'}</div>
+                    </div>
+
+                    <div class="box">
+                        <h4>Doti e Talenti</h4>
+                        <p><strong>Stirpe:</strong> ${c.doteStirpe}</p>
+                        <p><strong>Sentiero:</strong> ${c.sentiero}</p>
+                        <p><strong>Altro:</strong> ${c.dotiGen.join(', ') || 'Nessuna dote aggiuntiva'}</p>
+                    </div>
+
+                    <div class="box">
+                        <h4>Background</h4>
+                        <p style="white-space: pre-wrap;">${c.background}</p>
+                    </div>
                 </div>
-                <div class="box">
-                    <h4>Doti e Talenti</h4>
-                    <p>${c.esperto}</p>
+
+                <div class="side-col">
+                    <img src="${c.ritratto}" class="portrait" alt="Ritratto">
+                    <div class="box">
+                        <h4>Orgoglio</h4>
+                        <p><em>"${c.orgoglio}"</em></p>
+                    </div>
+                    <div class="box">
+                        <h4>Segreto Oscuro</h4>
+                        <p><em>"${c.segreto}"</em></p>
+                    </div>
                 </div>
             </div>
         `;
-        document.getElementById('detail-overlay').style.display = 'block';
+
+        document.getElementById('master-list').style.display = 'none';
+        document.getElementById('main-header').style.display = 'none';
+        document.getElementById('detail-view').style.display = 'block';
+        window.scrollTo(0,0);
     }
 
-    function closeSheet() {
-        document.getElementById('detail-overlay').style.display = 'none';
+    function showMaster() {
+        document.getElementById('detail-view').style.display = 'none';
+        document.getElementById('master-list').style.display = 'grid';
+        document.getElementById('main-header').style.display = 'block';
     }
 
-    window.onload = loadData;
+    window.onload = init;
 </script>
+
 </body>
 </html>
