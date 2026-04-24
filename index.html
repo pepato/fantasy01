@@ -76,8 +76,8 @@
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const data = json.table.rows;
 
-            if (!data || data.length < 2) {
-                throw new Error("Nessun dato trovato. Assicurati che ci siano personaggi dalla riga 2 in poi.");
+            if (!data || data.length < 3) {
+                throw new Error("Nessun dato trovato. Assicurati che ci siano personaggi dalla riga 3 in poi.");
             }
 
             // Mappatura robusta
