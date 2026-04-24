@@ -3,169 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Party Tracker</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet">
+    <title>Forbidden Lands - Archivio Avventurieri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Metamorphous&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --parchment: #f4e4bc;
             --leather: #3d2b1f;
             --gold: #c5a059;
-            --ink: #2b2b2b;
+            --ink: #1a1a1a;
+            --blood: #8b0000;
         }
 
         body {
-            background-color: #2c2c2c;
+            background-color: #121212;
             color: var(--ink);
             font-family: 'Quattrocento', serif;
-            margin: 0;
+            margin: 0; padding: 20px;
+        }
+
+        header { text-align: center; color: var(--gold); margin-bottom: 40px; }
+        header h1 { font-family: 'Cinzel', serif; font-size: 3rem; margin: 0; }
+
+        /* GRIGLIA PRINCIPALE */
+        #master-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .char-card {
+            background: var(--parchment);
+            border: 5px solid var(--leather);
             padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
-            align-items: center;
+            justify-content: space-between;
         }
 
-        header {
-            text-align: center;
-            color: var(--gold);
-            margin-bottom: 30px;
+        .char-card:hover { transform: translateY(-10px); border-color: var(--gold); }
+        .char-card h2 { font-family: 'Cinzel', serif; margin: 5px 0; color: var(--blood); border-bottom: 2px solid var(--leather); }
+        
+        /* OVERLAY DETTAGLIO */
+        #detail-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            overflow-y: auto;
         }
 
-        header h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            margin: 0;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .loading { color: var(--gold); font-style: italic; }
-
-        /* Contenitore Schede */
-        #party-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .card {
+        .sheet {
             background: var(--parchment);
-            border: 8px solid var(--leather);
-            border-image: url("https://www.transparenttextures.com/patterns/dark-leather.png") 30 round;
-            padding: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-            position: relative;
+            width: 95%; max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            border: 12px solid var(--leather);
+            box-shadow: 0 0 50px black;
         }
 
-        .card h2 {
-            font-family: 'Cinzel', serif;
-            border-bottom: 2px solid var(--leather);
-            margin-top: 0;
-            color: var(--leather);
-        }
+        .close-btn { float: right; font-size: 2.5rem; cursor: pointer; font-family: 'Cinzel'; }
 
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+        /* SEZIONI SCHEDA */
+        .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+        .stat-box { background: rgba(0,0,0,0.05); border: 1px solid var(--leather); text-align: center; padding: 10px; }
+        .stat-label { display: block; font-size: 0.7rem; text-transform: uppercase; font-weight: bold; }
+        .stat-val { font-size: 1.8rem; font-family: 'Metamorphous'; color: var(--blood); }
 
-        .stat-item {
-            background: rgba(0,0,0,0.05);
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
+        .info-section { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 20px; }
+        .box { border-top: 2px solid var(--leather); padding-top: 10px; }
+        .box h4 { font-family: 'Cinzel'; margin: 0 0 10px 0; color: var(--leather); }
 
-        .stat-label { font-weight: bold; font-size: 0.8rem; text-transform: uppercase; display: block; }
-        .stat-value { font-size: 1.2rem; font-weight: bold; }
-
-        .tags { margin-top: 10px; }
-        .tag {
-            display: inline-block;
-            background: var(--leather);
-            color: white;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            margin: 2px;
-        }
-
-        footer { margin-top: 50px; color: #888; font-size: 0.8rem; }
+        .loading { color: var(--gold); text-align: center; padding: 100px; font-size: 1.5rem; font-family: 'Cinzel'; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>ARCHIVIO AVVENTURIERI</h1>
-    <p>Dati in tempo reale dal Libro Mastro</p>
+    <h1>Forbidden Lands</h1>
+    <p>Compendio degli Eroi della Landa</p>
 </header>
 
-<div id="loader" class="loading">Invocando i dati dal foglio magico...</div>
-<div id="party-container"></div>
+<div id="loader" class="loading">Srotolando le pergamene dei dati...</div>
+<div id="master-grid"></div>
 
-<footer>Dati sincronizzati con Google Sheets</footer>
+<div id="detail-overlay">
+    <div class="sheet">
+        <span class="close-btn" onclick="closeSheet()">&times;</span>
+        <div id="sheet-content"></div>
+    </div>
+</div>
 
 <script>
-    // Configurazione: Inserisci qui l'ID del tuo foglio
-    const SHEET_ID = '1oI332RBYMInoqBfKVFLdAHRqH1jiUwY2ACUbcHnZntw';
-    // Nome della tab (es. 'PG' o 'Foglio1')
-    const TAB_NAME = 'PG'; 
+    const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
+    const TAB_NAME = 'Personaggio'; // Cambia in 'Foglio1' se necessario
 
-    async function fetchCharacterData() {
-        // Usiamo l'endpoint gviz per ottenere i dati in formato JSON
+    let characters = [];
+
+    async function loadData() {
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${TAB_NAME}`;
-
+        
         try {
             const response = await fetch(url);
             const text = await response.text();
-            // Pulizia del prefisso JSON di Google
-            const jsonData = JSON.parse(text.substring(47).slice(0, -2));
-            
-            const rows = jsonData.table.rows;
-            const container = document.getElementById('party-container');
-            document.getElementById('loader').style.display = 'none';
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const rows = json.table.rows;
 
-            rows.forEach(row => {
-                // Mappatura celle (A=0, B=1, C=2, ecc.)
-                // Modifica gli indici [0], [1] in base alle tue colonne reali
-                const char = {
-                    nome: row.c[1] ? row.c[1].v : "Sconosciuto",
-                    classe: row.c[2] ? row.c[2].v : "Viandante",
-                    salute: row.c[3] ? row.c[3].v : "0",
-                    volonta: row.c[5] ? row.c[5].v : "0",
-                    moralita: row.c[8] ? row.c[8].v : "0",
-                    vizio: row.c[10] ? row.c[10].v : "-",
-                    virtu: row.c[9] ? row.c[9].v : "-"
+            // Mappatura delle colonne basata sulla tua nuova struttura
+            characters = rows.map((row, i) => {
+                const c = row.c;
+                return {
+                    id: i,
+                    nome: c[1] ? c[1].v : "Eroe Ignoto",
+                    stirpe: c[2] ? c[2].v : "-",
+                    professione: c[3] ? c[3].v : "-",
+                    eta: c[4] ? c[4].v : "-",
+                    forza: c[5] ? c[5].v : 0,
+                    agilita: c[6] ? c[6].v : 0,
+                    acume: c[7] ? c[7].v : 0,
+                    empatia: c[8] ? c[8].v : 0,
+                    orgoglio: c[9] ? c[9].v : "-",
+                    segreto: c[10] ? c[10].v : "-",
+                    reputazione: c[11] ? c[11].v : 0,
+                    volonta: c[12] ? c[12].v : 0,
+                    esperto: c[13] ? c[13].v : "-"
                 };
-
-                const cardHtml = `
-                    <div class="card">
-                        <h2>${char.nome}</h2>
-                        <p><strong>Classe:</strong> ${char.classe}</p>
-                        <div class="stat-grid">
-                            <div class="stat-item"><span class="stat-label">Salute</span><span class="stat-value">${char.salute}</span></div>
-                            <div class="stat-item"><span class="stat-label">Volontà</span><span class="stat-value">${char.volonta}</span></div>
-                            <div class="stat-item"><span class="stat-label">Moralità</span><span class="stat-value">${char.moralita}</span></div>
-                            <div class="stat-item"><span class="stat-label">Virtù</span><span class="stat-value" style="font-size:0.9rem">${char.virtu}</span></div>
-                        </div>
-                        <div class="tags">
-                            <span class="tag">Vizio: ${char.vizio}</span>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += cardHtml;
             });
 
-        } catch (error) {
-            console.error("Errore nel recupero dati:", error);
-            document.getElementById('loader').innerText = "Errore: Assicurati di aver pubblicato il foglio sul web.";
+            renderGrid();
+            document.getElementById('loader').style.display = 'none';
+        } catch (e) {
+            document.getElementById('loader').innerHTML = "Errore: Assicurati che il foglio sia 'Pubblicato sul Web'";
         }
     }
 
-    window.onload = fetchCharacterData;
-</script>
+    function renderGrid() {
+        const grid = document.getElementById('master-grid');
+        grid.innerHTML = characters.map(c => `
+            <div class="char-card" onclick="openSheet(${c.id})">
+                <div>
+                    <h2>${c.nome}</h2>
+                    <p><strong>${c.stirpe}</strong> - ${c.professione}</p>
+                </div>
+                <div style="font-size: 0.8rem; font-style: italic; border-top: 1px solid #ccc; padding-top: 5px;">
+                    Clicca per i dettagli...
+                </div>
+            </div>
+        `).join('');
+    }
 
+    function openSheet(id) {
+        const c = characters.find(x => x.id === id);
+        const content = document.getElementById('sheet-content');
+        
+        content.innerHTML = `
+            <div style="border-bottom: 4px solid var(--leather); margin-bottom: 20px;">
+                <h1 style="font-family: 'Cinzel'; margin: 0; color: var(--blood);">${c.nome}</h1>
+                <p style="font-size: 1.2rem;">${c.stirpe} ${c.professione} | Età: ${c.eta} | Reputazione: ${c.reputazione}</p>
+            </div>
+
+            <div class="grid-stats">
+                <div class="stat-box"><span class="stat-label">Forza</span><span class="stat-val">${c.forza}</span></div>
+                <div class="stat-box"><span class="stat-label">Agilità</span><span class="stat-val">${c.agilita}</span></div>
+                <div class="stat-box"><span class="stat-label">Acume</span><span class="stat-val">${c.acume}</span></div>
+                <div class="stat-box"><span class="stat-label">Empatia</span><span class="stat-val">${c.empatia}</span></div>
+            </div>
+
+            <div class="info-section">
+                <div class="box">
+                    <h4>Orgoglio</h4>
+                    <p>"${c.orgoglio}"</p>
+                </div>
+                <div class="box">
+                    <h4>Punti Volontà</h4>
+                    <div class="stat-val" style="font-size: 3rem; text-align: center;">${c.volonta}</div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <div class="box">
+                    <h4>Segreto Oscuro</h4>
+                    <p>${c.segreto}</p>
+                </div>
+                <div class="box">
+                    <h4>Doti e Talenti</h4>
+                    <p>${c.esperto}</p>
+                </div>
+            </div>
+        `;
+        document.getElementById('detail-overlay').style.display = 'block';
+    }
+
+    function closeSheet() {
+        document.getElementById('detail-overlay').style.display = 'none';
+    }
+
+    window.onload = loadData;
+</script>
 </body>
 </html>
