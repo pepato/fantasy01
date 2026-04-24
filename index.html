@@ -68,6 +68,7 @@
     async function init() {
         // Usiamo un URL più generico che pesca la prima tab se il nome fallisce
         const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+        // https://docs.google.com/spreadsheets/d/1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s/edit?usp=sharing
         
         try {
             const response = await fetch(url);
@@ -75,7 +76,7 @@
             const json = JSON.parse(text.substring(47).slice(0, -2));
             const data = json.table.rows;
 
-            if (!data || data.length < 3) {
+            if (!data || data.length < 2) {
                 throw new Error("Nessun dato trovato. Assicurati che ci siano personaggi dalla riga 3 in poi.");
             }
 
