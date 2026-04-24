@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Party Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Quattrocento:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --parchment: #f4e4bc;
+            --leather: #3d2b1f;
+            --gold: #c5a059;
+            --ink: #2b2b2b;
+        }
+
+        body {
+            background-color: #2c2c2c;
+            color: var(--ink);
+            font-family: 'Quattrocento', serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            color: var(--gold);
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .loading { color: var(--gold); font-style: italic; }
+
+        /* Contenitore Schede */
+        #party-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background: var(--parchment);
+            border: 8px solid var(--leather);
+            border-image: url("https://www.transparenttextures.com/patterns/dark-leather.png") 30 round;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .card h2 {
+            font-family: 'Cinzel', serif;
+            border-bottom: 2px solid var(--leather);
+            margin-top: 0;
+            color: var(--leather);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            background: rgba(0,0,0,0.05);
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .stat-label { font-weight: bold; font-size: 0.8rem; text-transform: uppercase; display: block; }
+        .stat-value { font-size: 1.2rem; font-weight: bold; }
+
+        .tags { margin-top: 10px; }
+        .tag {
+            display: inline-block;
+            background: var(--leather);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin: 2px;
+        }
+
+        footer { margin-top: 50px; color: #888; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ARCHIVIO AVVENTURIERI</h1>
+    <p>Dati in tempo reale dal Libro Mastro</p>
+</header>
+
+<div id="loader" class="loading">Invocando i dati dal foglio magico...</div>
+<div id="party-container"></div>
+
+<footer>Dati sincronizzati con Google Sheets</footer>
+
+<script>
+    // Configurazione: Inserisci qui l'ID del tuo foglio
+    const SHEET_ID = '1oI332RBYMInoqBfKVFLdAHRqH1jiUwY2ACUbcHnZntw';
+    // Nome della tab (es. 'PG' o 'Foglio1')
+    const TAB_NAME = 'PG'; 
+
+    async function fetchCharacterData() {
+        // Usiamo l'endpoint gviz per ottenere i dati in formato JSON
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${TAB_NAME}`;
+
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            // Pulizia del prefisso JSON di Google
+            const jsonData = JSON.parse(text.substring(47).slice(0, -2));
+            
+            const rows = jsonData.table.rows;
+            const container = document.getElementById('party-container');
+            document.getElementById('loader').style.display = 'none';
+
+            rows.forEach(row => {
+                // Mappatura celle (A=0, B=1, C=2, ecc.)
+                // Modifica gli indici [0], [1] in base alle tue colonne reali
+                const char = {
+                    nome: row.c[1] ? row.c[1].v : "Sconosciuto",
+                    classe: row.c[2] ? row.c[2].v : "Viandante",
+                    salute: row.c[3] ? row.c[3].v : "0",
+                    volonta: row.c[5] ? row.c[5].v : "0",
+                    moralita: row.c[8] ? row.c[8].v : "0",
+                    vizio: row.c[10] ? row.c[10].v : "-",
+                    virtu: row.c[9] ? row.c[9].v : "-"
+                };
+
+                const cardHtml = `
+                    <div class="card">
+                        <h2>${char.nome}</h2>
+                        <p><strong>Classe:</strong> ${char.classe}</p>
+                        <div class="stat-grid">
+                            <div class="stat-item"><span class="stat-label">Salute</span><span class="stat-value">${char.salute}</span></div>
+                            <div class="stat-item"><span class="stat-label">Volontà</span><span class="stat-value">${char.volonta}</span></div>
+                            <div class="stat-item"><span class="stat-label">Moralità</span><span class="stat-value">${char.moralita}</span></div>
+                            <div class="stat-item"><span class="stat-label">Virtù</span><span class="stat-value" style="font-size:0.9rem">${char.virtu}</span></div>
+                        </div>
+                        <div class="tags">
+                            <span class="tag">Vizio: ${char.vizio}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+
+        } catch (error) {
+            console.error("Errore nel recupero dati:", error);
+            document.getElementById('loader').innerText = "Errore: Assicurati di aver pubblicato il foglio sul web.";
+        }
+    }
+
+    window.onload = fetchCharacterData;
+</script>
+
+</body>
+</html>
