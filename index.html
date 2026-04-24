@@ -1,72 +1,99 @@
-<script>
-    const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
-    
-    async function init() {
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-        
-        try {
-            const response = await fetch(url);
-            const text = await response.text();
-            const json = JSON.parse(text.substring(47).slice(0, -2));
-            const rows = json.table.rows;
-
-            // Ora saltiamo solo la riga 0 (le intestazioni)
-            // La mappatura segue: A=0(ID), B=1(Nome), C=2(Soprannome), ecc.
-            characters = rows.slice(1).map((row) => {
-                const c = row.c;
-                const v = (i) => (c && c[i] && c[i].v !== null) ? c[i].v : "";
-
-                return {
-                    id: v(0), // Campo ID dalla Colonna A
-                    nome: v(1),
-                    soprannome: v(2),
-                    stirpe: v(3),
-                    professione: v(4),
-                    eta: v(5),
-                    orgoglio: v(6),
-                    segreto: v(7),
-                    background: v(8),
-                    ritratto: v(9),
-                    volonta: v(10),
-                    esperienza: v(11),
-                    reputazione: v(12),
-                    doteStirpe: v(13),
-                    sentiero: v(14),
-                    dotiGen: [v(15), v(16), v(17)].filter(x => x),
-                    forza: v(18),
-                    agilita: v(19),
-                    acume: v(20),
-                    empatia: v(21),
-                    abilita: {
-                        "Artigianato": v(22), "Mischia": v(23), "Resistenza": v(24), "Vigore": v(25),
-                        "Furtività": v(26), "Mira": v(27), "Movimento": v(28), "Rapidità": v(29),
-                        "Erudizione": v(30), "Intuito": v(31), "Percezione": v(32), "Sopravvivenza": v(33),
-                        "Addestramento": v(34), "Esibizione": v(35), "Guarigione": v(36), "Persuasione": v(37)
-                    }
-                };
-            }).filter(char => char.nome !== "");
-
-            renderMaster();
-            document.getElementById('loader').style.display = 'none';
-        } catch (e) {
-            document.getElementById('loader').innerHTML = "Errore nel caricamento dei dati.";
-            console.error(e);
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORBIDDEN LANDS - Compendio Eroi</title>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+DW+Pica&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-green: #1b261d;
+            --blood-red: #7a0000;
+            --brown: #3d2b1f;
+            --teal: #2d5a5a;
+            --parchment: #d9cbb3;
+            --ink: #1a1a1a;
+            --gold: #b08d57;
         }
-    }
 
-    function renderMaster() {
-        const list = document.getElementById('master-list');
-        list.innerHTML = characters.map(c => `
-            <div class="char-card" onclick="showDetail('${c.id}')">
-                <h2>${c.nome}</h2>
-                <p>${c.soprannome}</p>
-                <div style="margin-top:10px; color:var(--teal)">${c.stirpe} ${c.professione}</div>
-            </div>
-        `).join('');
-    }
+        * { box-sizing: border-box; }
 
-    function showDetail(id) {
-        const c = characters.find(x => x.id == id);
-        // ... (il resto della funzione showDetail rimane identico al precedente)
-    }
-</script>
+        body {
+            background-color: #0d0d0d;
+            background-image: url("https://www.transparenttextures.com/patterns/dark-matter.png");
+            color: var(--ink);
+            font-family: 'IM Fell DW Pica', serif;
+            margin: 0; padding: 20px;
+            line-height: 1.4;
+        }
+
+        /* Intestazioni */
+        h1, h2, h3, h4 { font-family: 'IM Fell English SC', serif; text-transform: uppercase; margin: 0; }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header { 
+            text-align: center; 
+            color: var(--gold); 
+            margin-bottom: 40px; 
+            border-bottom: 3px double var(--blood-red); 
+            padding-bottom: 20px; 
+        }
+
+        /* Master View (Griglia Personaggi) */
+        #master-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .char-card {
+            background: var(--parchment);
+            border: 5px solid var(--brown);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+            background-image: url("https://www.transparenttextures.com/patterns/paper.png");
+        }
+
+        .char-card:hover { 
+            transform: scale(1.02); 
+            border-color: var(--gold); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+        }
+
+        .char-card h2 { color: var(--blood-red); border-bottom: 1px solid var(--brown); margin-bottom: 5px; }
+        .char-card p { font-style: italic; font-size: 1.1rem; margin: 0; }
+
+        /* Detail View (Scheda Personaggio) */
+        #detail-view {
+            display: none;
+            background: var(--parchment);
+            border: 12px solid var(--brown);
+            padding: 40px;
+            box-shadow: 0 0 60px black;
+            background-image: url("https://www.transparenttextures.com/patterns/parchment.png");
+            position: relative;
+        }
+
+        .back-btn {
+            background: var(--brown);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 8px 15px;
+            font-family: 'IM Fell English SC';
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover { background: var(--blood-red); color: white; }
+
+        /* Struttura Scheda */
+        .identity-section { text-align: center; border-bottom: 2px solid var(--ink); margin-bottom: 25px; padding-bottom: 15px; }
+        .identity-section h1 { font-size: 3.5rem; color: var(--blood-red); }
+        
+        .attr-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+            margin: 20px 0; background
