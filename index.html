@@ -96,4 +96,207 @@
         
         .attr-grid {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
-            margin: 20px 0; background
+            margin: 20px 0; background: var(--dark-green); padding: 20px;
+            border: 2px solid var(--gold); box-shadow: inset 0 0 10px black;
+        }
+        .attr-box { text-align: center; color: white; }
+        .attr-label { display: block; font-size: 0.8rem; color: var(--gold); text-transform: uppercase; }
+        .attr-val { font-size: 2.5rem; font-family: 'Special Elite', cursive; }
+
+        .values-bar { 
+            display: flex; justify-content: space-around; 
+            background: var(--teal); color: white; padding: 15px; 
+            margin-bottom: 25px; border: 1px solid var(--gold);
+        }
+        .val-item { text-align: center; }
+        .val-num { display: block; font-size: 2rem; font-family: 'Special Elite'; line-height: 1; }
+
+        .sheet-body { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+
+        .box { border: 1px solid var(--brown); padding: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.03); }
+        .box h4 { margin: 0 0 10px 0; border-bottom: 1px solid var(--blood-red); color: var(--blood-red); }
+
+        .skill-grid { columns: 2; column-gap: 20px; }
+        .skill-item { 
+            display: flex; justify-content: space-between; 
+            border-bottom: 1px dotted var(--brown); 
+            font-family: 'Special Elite'; font-size: 0.95rem; 
+            margin-bottom: 5px; 
+        }
+
+        .portrait { width: 100%; border: 6px double var(--brown); filter: sepia(0.4) contrast(1.1); margin-bottom: 20px; }
+
+        .loading { text-align: center; color: var(--gold); font-size: 2rem; padding: 100px; font-family: 'IM Fell English SC'; }
+
+        @media (max-width: 768px) {
+            .sheet-body { grid-template-columns: 1fr; }
+            .attr-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header id="main-header">
+        <h1>Forbidden Lands</h1>
+        <p>— Registro degli Avventurieri —</p>
+    </header>
+
+    <div id="loader" class="loading">Invocando i dati dalle Terre Proibite...</div>
+
+    <div id="master-list"></div>
+
+    <div id="detail-view">
+        <button class="back-btn" onclick="showMaster()">← Chiudi Pergamena</button>
+        <div id="sheet-content"></div>
+    </div>
+</div>
+
+<script>
+    const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
+    
+    async function init() {
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+        
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const rows = json.table.rows;
+
+            // Mappatura: Saltiamo la riga 0 (intestazioni). 
+            // Ordine: A=ID(0), B=Nome(1), C=Soprannome(2), D=Stirpe(3), E=Professione(4), F=Età(5)...
+            characters = rows.slice(1).map((row, index) => {
+                const c = row.c;
+                const v = (i) => (c && c[i] && c[i].v !== null) ? c[i].v : "";
+
+                return {
+                    id: v(0),
+                    nome: v(1),
+                    soprannome: v(2),
+                    stirpe: v(3),
+                    professione: v(4),
+                    eta: v(5),
+                    orgoglio: v(6),
+                    segreto: v(7),
+                    background: v(8),
+                    ritratto: v(9),
+                    volonta: v(10),
+                    esperienza: v(11),
+                    reputazione: v(12),
+                    doteStirpe: v(13),
+                    doteSentiero: v(14),
+                    dotiAltro: [v(15), v(16), v(17)].filter(x => x && x !== "-"),
+                    forza: v(18),
+                    agilita: v(19),
+                    acume: v(20),
+                    empatia: v(21),
+                    abilita: {
+                        "Artigianato (Fo)": v(22), "Mischia (Fo)": v(23), "Resistenza (Fo)": v(24), "Vigore (Fo)": v(25),
+                        "Furtività (Ag)": v(26), "Mira (Ag)": v(27), "Movimento (Ag)": v(28), "Rapidità (Ag)": v(29),
+                        "Erudizione (Ac)": v(30), "Intuito (Ac)": v(31), "Percezione (Ac)": v(32), "Sopravvivenza (Ac)": v(33),
+                        "Addestramento (Em)": v(34), "Esibizione (Em)": v(35), "Guarigione (Em)": v(36), "Persuasione (Em)": v(37)
+                    }
+                };
+            }).filter(char => char.nome !== "");
+
+            renderMaster();
+            document.getElementById('loader').style.display = 'none';
+        } catch (e) {
+            document.getElementById('loader').innerHTML = "Errore: Impossibile leggere il Libro Mastro.";
+            console.error(e);
+        }
+    }
+
+    function renderMaster() {
+        const list = document.getElementById('master-list');
+        list.innerHTML = characters.map(c => `
+            <div class="char-card" onclick="showDetail('${c.id}')">
+                <h2>${c.nome}</h2>
+                <p>${c.soprannome}</p>
+                <div style="margin-top:10px; font-weight:bold; color:var(--teal)">${c.stirpe} ${c.professione}</div>
+            </div>
+        `).join('');
+    }
+
+    function showDetail(id) {
+        const c = characters.find(x => x.id == id);
+        const content = document.getElementById('sheet-content');
+        
+        // Filtro abilità con valore > 0
+        const skillHtml = Object.entries(c.abilita)
+            .filter(([_, val]) => val !== "" && val > 0)
+            .map(([name, val]) => `<div class="skill-item"><span>${name}</span><span>${val}</span></div>`)
+            .join('');
+
+        content.innerHTML = `
+            <div class="identity-section">
+                <h1>${c.nome}</h1>
+                <h2 style="font-style:italic; opacity:0.8">${c.soprannome}</h2>
+                <p style="font-size:1.3rem"><strong>${c.stirpe}</strong> — <strong>${c.professione}</strong> — Età: ${c.eta}</p>
+            </div>
+
+            <div class="values-bar">
+                <div class="val-item"><span class="val-num">${c.volonta}</span>VOLONTÀ</div>
+                <div class="val-item"><span class="val-num">${c.esperienza}</span>ESPERIENZA</div>
+                <div class="val-item"><span class="val-num">${c.reputazione}</span>REPUTAZIONE</div>
+            </div>
+
+            <div class="sheet-body">
+                <div class="left-col">
+                    <div class="attr-grid">
+                        <div class="attr-box"><span class="attr-label">Forza</span><span class="attr-val">${c.forza}</span></div>
+                        <div class="attr-box"><span class="attr-label">Agilità</span><span class="attr-val">${c.agilita}</span></div>
+                        <div class="attr-box"><span class="attr-label">Acume</span><span class="attr-val">${c.acume}</span></div>
+                        <div class="attr-box"><span class="attr-label">Empatia</span><span class="attr-val">${c.empatia}</span></div>
+                    </div>
+
+                    <div class="box">
+                        <h4>Abilità Addestrate</h4>
+                        <div class="skill-grid">${skillHtml || 'Nessuna abilità particolare.'}</div>
+                    </div>
+
+                    <div class="box">
+                        <h4>Doti e Talenti</h4>
+                        <p><strong>Dote di Stirpe:</strong> ${c.doteStirpe}</p>
+                        <p><strong>Sentiero:</strong> ${c.doteSentiero}</p>
+                        <p><strong>Altre Doti:</strong> ${c.dotiAltro.join(", ") || "-"}</p>
+                    </div>
+
+                    <div class="box">
+                        <h4>Cronache e Background</h4>
+                        <p style="white-space: pre-wrap;">${c.background}</p>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <img src="${c.ritratto || 'https://via.placeholder.com/300x400?text=Ritratto'}" class="portrait">
+                    <div class="box">
+                        <h4>Orgoglio</h4>
+                        <p><em>"${c.orgoglio}"</em></p>
+                    </div>
+                    <div class="box">
+                        <h4>Segreto Oscuro</h4>
+                        <p><em>"${c.segreto}"</em></p>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('master-list').style.display = 'none';
+        document.getElementById('main-header').style.display = 'none';
+        document.getElementById('detail-view').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    function showMaster() {
+        document.getElementById('detail-view').style.display = 'none';
+        document.getElementById('master-list').style.display = 'grid';
+        document.getElementById('main-header').style.display = 'block';
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
