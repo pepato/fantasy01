@@ -147,7 +147,14 @@
     <div id="loader" class="loading">Invocando i dati dalle Terre Proibite...</div>
 
     <div id="master-list"></div>
-    <!-- INSERISCO CODICE PER CONFRONTO PG -->
+    
+
+    <div id="detail-view">
+        <button class="back-btn" onclick="showMaster()">← Chiudi Pergamena</button>
+        <div id="sheet-content"></div>
+    </div>
+</div>
+<!-- INSERISCO CODICE PER CONFRONTO PG -->
 <div id="comparison-section" class="box" style="margin: 20px; display: none;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3>Confronto Eroi</h3>
@@ -167,13 +174,6 @@
 <div style="text-align: center; margin-bottom: 20px;">
     <button id="btn-compare" onclick="toggleComparison()" class="char-card" style="display: inline-block; padding: 10px 20px;">⚔️ Confronta Eroi</button>
 </div>
-
-    <div id="detail-view">
-        <button class="back-btn" onclick="showMaster()">← Chiudi Pergamena</button>
-        <div id="sheet-content"></div>
-    </div>
-</div>
-
 <script>
     // Aggiungiamo &headers=1 per obbligare Google a vedere la riga 2 come DATI
     const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
