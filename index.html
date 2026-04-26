@@ -312,12 +312,18 @@
 function toggleComparison() {
     const section = document.getElementById('comparison-section');
     const isHidden = section.style.display === 'none';
-    section.style.display = isHidden ? 'block' : 'none';
     
     if (isHidden) {
+        section.style.display = 'block'; // Prima mostriamo la sezione...
         populateSelectors();
-        updateComparison();
+        // ...e usiamo un micro-ritardo per dare tempo al browser di calcolare gli spazi
+        setTimeout(() => {
+            updateComparison();
+        }, 50); 
+    } else {
+        section.style.display = 'none';
     }
+
 }
 
 function populateSelectors() {
