@@ -137,7 +137,30 @@
     </style>
 </head>
 <body>
+<!-- COMPARISON -->
+    <div id="comparison-section" class="box" style="display: none; margin: 20px; border: 2px solid var(--brown);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0; color: var(--blood-red);">⚔️ Analisi Compagnia</h3>
+        <button onclick="toggleComparison()" style="cursor: pointer; background: none; border: 1px solid var(--brown); font-family: inherit;">Chiudi</button>
+    </div>
 
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+        <select id="select-char-1" onchange="updateComparison()" style="padding: 8px; background: var(--parchment); font-family: inherit;"></select>
+        <select id="select-char-2" onchange="updateComparison()" style="padding: 8px; background: var(--parchment); font-family: inherit;"></select>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.6); border-radius: 8px; padding: 15px; position: relative;">
+        <canvas id="comparisonChart"></canvas>
+    </div>
+</div>
+
+<div style="text-align: center; margin: 20px 0;">
+    <button onclick="toggleComparison()" class="char-card" style="display: inline-block; padding: 10px 25px; cursor: pointer; font-weight: bold;">
+        CONFRONTA EROI
+    </button>
+</div>
+<!-- FINE COMPARISON -->
+    
 <div class="container">
     <header id="main-header">
         <h1>Forbidden Lands</h1>
