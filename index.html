@@ -183,6 +183,92 @@
     // Aggiungiamo &headers=1 per obbligare Google a vedere la riga 2 come DATI
     const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
     const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1`;
+    let characters = [];
+    let myRadarChart = null; // Questa variabile tiene traccia del grafico attivo
+
+// 1. Funzione per mostrare/nascondere il pannello
+function toggleComparison() {
+    const section = document.getElementById('comparison-section');
+    if (!section) return;
+
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        
+        // Popoliamo i menu a tendina con i nomi dei personaggi
+        const s1 = document.getElementById('select-char-1');
+        const s2 = document.getElementById('select-char-2');
+        
+        // Usiamo l'array 'characters' che abbiamo già popolato con i dati di Google
+        const options = characters.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+        s1.innerHTML = options;
+        s2.innerHTML = options;
+        
+        if (s2.options.length > 1) s2.selectedIndex = 1; // Seleziona il secondo PG di default
+
+        // Aspettiamo un attimo che il CSS renderizzi il div prima di disegnarci dentro
+        setTimeout(updateComparison, 100);
+    } else {
+        section.style.display = 'none';
+    }
+}
+
+// 2. Funzione che disegna o aggiorna il grafico
+function updateComparison() {
+    const id1 = document.getElementById('select-char-1').value;
+    const id2 = document.getElementById('select-char-2').value;
+    
+    // Troviamo i due personaggi scelti nell'array globale
+    const char1 = characters.find(c => c.id === id1);
+    const char2 = characters.find(c => c.id === id2);
+
+    if (!char1 || !char2) return;
+
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+
+    // Se esiste già un grafico, dobbiamo distruggerlo prima di crearne uno nuovo
+    if (myRadarChart) {
+        myRadarChart.destroy();
+    }
+
+    // Creiamo il nuovo Radar Chart
+    myRadarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Forza', 'Agilità', 'Acume', 'Empatia'],
+            datasets: [
+                {
+                    label: char1.nome,
+                    data: [char1.forza, char1.agilita, char1.acume, char1.empatia],
+                    backgroundColor: 'rgba(122, 0, 0, 0.4)', // Rosso per il PG 1
+                    borderColor: '#7a0000',
+                    borderWidth: 2
+                },
+                {
+                    label: char2.nome,
+                    data: [char2.forza, char2.agilita, char2.acume, char2.empatia],
+                    backgroundColor: 'rgba(0, 100, 100, 0.4)', // Teal per il PG 2
+                    borderColor: '#006464',
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            scales: {
+                r: {
+                    min: 0,
+                    max: 6, // Limite tipico di Forbidden Lands
+                    ticks: { stepSize: 1, display: false },
+                    grid: { color: '#d9cbb3' },
+                    angleLines: { color: '#d9cbb3' },
+                    pointLabels: { font: { size: 14, family: 'Georgia, serif' } }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
     
     async function init() {
         try {
@@ -312,6 +398,7 @@
     }
 
     window.onload = init;
+
     
 </script>
 
