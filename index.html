@@ -206,7 +206,9 @@ function toggleComparison() {
         if (s2.options.length > 1) s2.selectedIndex = 1; // Seleziona il secondo PG di default
 
         // Aspettiamo un attimo che il CSS renderizzi il div prima di disegnarci dentro
-        setTimeout(updateComparison, 100);
+        console.log("Sezione aperta, lancio updateComparison...");
+        setTimeout(updateComparison, 300); // Ritardo per sicurezza
+       
     } else {
         section.style.display = 'none';
     }
