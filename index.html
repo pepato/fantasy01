@@ -133,6 +133,7 @@
             .attr-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -145,6 +146,26 @@
     <div id="loader" class="loading">Invocando i dati dalle Terre Proibite...</div>
 
     <div id="master-list"></div>
+    <-- INSERISCO CODICE PER CONFRONTO PG -->
+<div id="comparison-section" class="box" style="margin: 20px; display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3>Confronto Eroi</h3>
+        <button onclick="toggleComparison()" class="char-card" style="margin:0; padding: 5px 15px;">Chiudi</button>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+        <select id="select-char-1" onchange="updateComparison()" style="padding: 10px; border-radius: 5px; background: var(--parchment); font-family: inherit;"></select>
+        <select id="select-char-2" onchange="updateComparison()" style="padding: 10px; border-radius: 5px; background: var(--parchment); font-family: inherit;"></select>
+    </div>
+
+    <div style="background: white; border-radius: 10px; padding: 15px; max-width: 500px; margin: 0 auto;">
+        <canvas id="comparisonChart"></canvas>
+    </div>
+</div>
+
+<div style="text-align: center; margin-bottom: 20px;">
+    <button id="btn-compare" onclick="toggleComparison()" class="char-card" style="display: inline-block; padding: 10px 20px;">⚔️ Confronta Eroi</button>
+</div>
 
     <div id="detail-view">
         <button class="back-btn" onclick="showMaster()">← Chiudi Pergamena</button>
@@ -285,6 +306,83 @@
     }
 
     window.onload = init;
+    let myRadarChart = null;
+
+function toggleComparison() {
+    const section = document.getElementById('comparison-section');
+    const isHidden = section.style.display === 'none';
+    section.style.display = isHidden ? 'block' : 'none';
+    
+    if (isHidden) {
+        populateSelectors();
+        updateComparison();
+    }
+}
+
+function populateSelectors() {
+    const s1 = document.getElementById('select-char-1');
+    const s2 = document.getElementById('select-char-2');
+    
+    // Puliamo e popoliamo i selettori con i nomi dei personaggi carichi
+    const options = characters.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+    s1.innerHTML = options;
+    s2.innerHTML = options;
+    
+    // Seleziona il secondo personaggio di default se esiste
+    if (s2.options.length > 1) s2.selectedIndex = 1;
+}
+
+function updateComparison() {
+    const id1 = document.getElementById('select-char-1').value;
+    const id2 = document.getElementById('select-char-2').value;
+    
+    const char1 = characters.find(c => c.id === id1);
+    const char2 = characters.find(c => c.id === id2);
+
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+
+    if (myRadarChart) myRadarChart.destroy();
+
+    myRadarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Forza', 'Agilità', 'Acume', 'Empatia'],
+            datasets: [
+                {
+                    label: char1.nome,
+                    data: [char1.forza, char1.agilita, char1.acume, char1.empatia],
+                    backgroundColor: 'rgba(122, 0, 0, 0.3)',
+                    borderColor: '#7a0000',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#7a0000'
+                },
+                {
+                    label: char2.nome,
+                    data: [char2.forza, char2.agilita, char2.acume, char2.empatia],
+                    backgroundColor: 'rgba(0, 100, 100, 0.3)',
+                    borderColor: '#006464',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#006464'
+                }
+            ]
+        },
+        options: {
+            scales: {
+                r: {
+                    angleLines: { color: '#d9cbb3' },
+                    grid: { color: '#d9cbb3' },
+                    pointLabels: { font: { size: 14, family: 'inherit' }, color: '#46382e' },
+                    suggestedMin: 0,
+                    suggestedMax: 6,
+                    ticks: { stepSize: 1, display: false }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
 </script>
 
 </body>
