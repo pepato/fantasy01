@@ -1,6 +1,7 @@
 /* FOGLIO STILE */
-
+@import url('https://fonts.googleapis.com/css2?family=Fondamento&display=swap');
 @charset "UTF-8";
+
         :root {
             --dark-green: #1b261d;
             --blood-red: #7a0000;
