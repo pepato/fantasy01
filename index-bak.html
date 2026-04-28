@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORBIDDEN LANDS - Compendio Eroi</title>
+    <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+DW+Pica&family=Special+Elite&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --dark-green: #1b261d;
+            --blood-red: #7a0000;
+            --brown: #3d2b1f;
+            --teal: #2d5a5a;
+            --parchment: #d9cbb3;
+            --ink: #1a1a1a;
+            --gold: #b08d57;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background-color: #0d0d0d;
+            background-image: url("https://www.transparenttextures.com/patterns/dark-matter.png");
+            color: var(--ink);
+            font-family: 'IM Fell DW Pica', serif;
+            margin: 0; padding: 20px;
+            line-height: 1.4;
+        }
+
+        /* Intestazioni */
+        h1, h2, h3, h4 { font-family: 'IM Fell English SC', serif; text-transform: uppercase; margin: 0; }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header { 
+            text-align: center; 
+            color: var(--gold); 
+            margin-bottom: 40px; 
+            border-bottom: 3px double var(--blood-red); 
+            padding-bottom: 20px; 
+        }
+
+        /* Master View (Griglia Personaggi) */
+        #master-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .char-card {
+            background: var(--parchment);
+            border: 5px solid var(--brown);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+            background-image: url("https://www.transparenttextures.com/patterns/paper.png");
+        }
+
+        .char-card:hover { 
+            transform: scale(1.02); 
+            border-color: var(--gold); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+        }
+
+        .char-card h2 { color: var(--blood-red); border-bottom: 1px solid var(--brown); margin-bottom: 5px; }
+        .char-card p { font-style: italic; font-size: 1.1rem; margin: 0; }
+
+        /* Detail View (Scheda Personaggio) */
+        #detail-view {
+            display: none;
+            background: var(--parchment);
+            border: 12px solid var(--brown);
+            padding: 40px;
+            box-shadow: 0 0 60px black;
+            background-image: url("https://www.transparenttextures.com/patterns/parchment.png");
+            position: relative;
+        }
+
+        .back-btn {
+            background: var(--brown);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 8px 15px;
+            font-family: 'IM Fell English SC';
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover { background: var(--blood-red); color: white; }
+
+        /* Struttura Scheda */
+        .identity-section { text-align: center; border-bottom: 2px solid var(--ink); margin-bottom: 25px; padding-bottom: 15px; }
+        .identity-section h1 { font-size: 3.5rem; color: var(--blood-red); }
+        
+        .attr-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
+            margin: 20px 0; background: var(--dark-green); padding: 20px;
+            border: 2px solid var(--gold); box-shadow: inset 0 0 10px black;
+        }
+        .attr-box { text-align: center; color: white; }
+        .attr-label { display: block; font-size: 0.8rem; color: var(--gold); text-transform: uppercase; }
+        .attr-val { font-size: 2.5rem; font-family: 'Special Elite', cursive; }
+
+        .values-bar { 
+            display: none;
+            /*display: flex; justify-content: space-around; */
+            background: var(--teal); color: white; padding: 15px; 
+            margin-bottom: 25px; border: 1px solid var(--gold);
+        }
+        .val-item { text-align: center; }
+        .val-num { display: block; font-size: 2rem; font-family: 'Special Elite'; line-height: 1; }
+
+        .sheet-body { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+
+        .box { border: 1px solid var(--brown); padding: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.03); }
+        .box h4 { margin: 0 0 10px 0; border-bottom: 1px solid var(--blood-red); color: var(--blood-red); }
+
+        .skill-grid { columns: 2; column-gap: 20px; }
+        .skill-item { 
+            display: flex; justify-content: space-between; 
+            border-bottom: 1px dotted var(--brown); 
+            font-family: 'Special Elite'; font-size: 0.95rem; 
+            margin-bottom: 5px; 
+        }
+
+        .portrait { width: 100%; border: 6px double var(--brown); filter: sepia(0.4) contrast(1.1); margin-bottom: 20px; }
+
+        .loading { text-align: center; color: var(--gold); font-size: 2rem; padding: 100px; font-family: 'IM Fell English SC'; }
+
+        @media (max-width: 768px) {
+            .sheet-body { grid-template-columns: 1fr; }
+            .attr-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    
+<div class="container">
+    <header id="main-header">
+        <h1>Forbidden Lands</h1>
+        <p>— Registro degli Avventurieri —</p>
+    </header>
+<!-- COMPARISON -->
+    <div id="comparison-section" class="box" style="display: none; margin: 20px; border: 2px solid var(--brown);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin: 0; color: var(--blood-red);">⚔️ Analisi Compagnia</h3>
+        <button onclick="toggleComparison()" style="cursor: pointer; background: none; border: 1px solid var(--brown); font-family: inherit;">Chiudi</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+        <select id="select-char-1" onchange="updateComparison()" style="padding: 8px; background: var(--parchment); font-family: inherit;"></select>
+        <select id="select-char-2" onchange="updateComparison()" style="padding: 8px; background: var(--parchment); font-family: inherit;"></select>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.6); border-radius: 8px; padding: 15px; position: relative;">
+        <canvas id="comparisonChart"></canvas>
+    </div>
+</div>
+
+<div style="text-align: center; margin: 20px 0;">
+    <button onclick="toggleComparison()" class="char-card" style="display: inline-block; padding: 10px 25px; cursor: pointer; font-weight: bold;">
+        CONFRONTA EROI
+    </button>
+</div>
+<!-- FINE COMPARISON -->
+    
+    <div id="loader" class="loading">Invocando i dati dalle Terre Proibite...</div>
+
+    <div id="master-list"></div>
+    
+
+    <div id="detail-view">
+        <button class="back-btn" onclick="showMaster()">← Chiudi Pergamena</button>
+        <div id="sheet-content"></div>
+    </div>
+</div>
+
+<script>
+    // Aggiungiamo &headers=1 per obbligare Google a vedere la riga 2 come DATI
+    const SHEET_ID = '1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s';
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&headers=1`;
+    let characters = [];
+    let myRadarChart = null; // Questa variabile tiene traccia del grafico attivo
+
+// 1. Funzione per mostrare/nascondere il pannello
+function toggleComparison() {
+    const section = document.getElementById('comparison-section');
+    if (!section) return;
+
+    if (section.style.display === 'none') {
+        section.style.display = 'block';
+        
+        // Popoliamo i menu a tendina con i nomi dei personaggi
+        const s1 = document.getElementById('select-char-1');
+        const s2 = document.getElementById('select-char-2');
+        
+        // Usiamo l'array 'characters' che abbiamo già popolato con i dati di Google
+        const options = characters.map(c => `<option value="${c.id}">${c.nome}</option>`).join('');
+        s1.innerHTML = options;
+        s2.innerHTML = options;
+        
+        if (s2.options.length > 1) s2.selectedIndex = 1; // Seleziona il secondo PG di default
+
+        // Aspettiamo un attimo che il CSS renderizzi il div prima di disegnarci dentro
+        console.log("Sezione aperta, lancio updateComparison...");
+        setTimeout(updateComparison, 300); // Ritardo per sicurezza
+       
+    } else {
+        section.style.display = 'none';
+    }
+}
+
+// 2. Funzione che disegna o aggiorna il grafico
+function updateComparison() {
+    const id1 = document.getElementById('select-char-1').value;
+    const id2 = document.getElementById('select-char-2').value;
+    
+    // Troviamo i due personaggi scelti nell'array globale
+    const char1 = characters.find(c => c.id === id1);
+    const char2 = characters.find(c => c.id === id2);
+
+    if (!char1 || !char2) return;
+
+    const ctx = document.getElementById('comparisonChart').getContext('2d');
+
+    // Se esiste già un grafico, dobbiamo distruggerlo prima di crearne uno nuovo
+    if (myRadarChart) {
+        myRadarChart.destroy();
+    }
+
+    // Creiamo il nuovo Radar Chart
+    myRadarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Forza', 'Agilità', 'Acume', 'Empatia'],
+            datasets: [
+                {
+                    label: char1.nome,
+                    data: [char1.forza, char1.agilita, char1.acume, char1.empatia],
+                    backgroundColor: 'rgba(122, 0, 0, 0.4)', // Rosso per il PG 1
+                    borderColor: '#7a0000',
+                    borderWidth: 2
+                },
+                {
+                    label: char2.nome,
+                    data: [char2.forza, char2.agilita, char2.acume, char2.empatia],
+                    backgroundColor: 'rgba(0, 100, 100, 0.4)', // Teal per il PG 2
+                    borderColor: '#006464',
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            scales: {
+                r: {
+                    min: 0,
+                    max: 6, // Limite tipico di Forbidden Lands
+                    ticks: { stepSize: 1, display: false },
+                    grid: { color: '#d9cbb3' },
+                    angleLines: { color: '#d9cbb3' },
+                    pointLabels: { font: { size: 14, family: 'Georgia, serif' } }
+                }
+            },
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+}
+    
+    async function init() {
+        try {
+            const response = await fetch(url);
+            const text = await response.text();
+            const json = JSON.parse(text.substring(47).slice(0, -2));
+            const rows = json.table.rows;
+
+            console.log("Righe totali ricevute da Google:", rows.length);
+
+            // IMPORTANTE: Con &headers=1, Google ci manda SOLO i dati. 
+            // Quindi NON usiamo più .slice(1), altrimenti salteremmo di nuovo il primo PG!
+            characters = rows.map((row, index) => {
+                const c = row.c;
+                const v = (i) => (c && c[i] && c[i].v !== null) ? c[i].v : "";
+
+                return {
+                    id: v(0),
+                    nome: v(1),
+                    soprannome: v(2),
+                    stirpe: v(3),
+                    professione: v(4),
+                    eta: v(5),
+                    orgoglio: v(6),
+                    segreto: v(7),
+                    background: v(8),
+                    ritratto: v(9),
+                    volonta: v(10),
+                    esperienza: v(11),
+                    reputazione: v(12),
+                    doteStirpe: v(13),
+                    doteSentiero: v(14),
+                    dotiAltro: [v(15), v(16), v(17)].filter(x => x && x !== "-"),
+                    forza: v(18),
+                    agilita: v(19),
+                    acume: v(20),
+                    empatia: v(21),
+                    abilita: {
+                        "Artigianato": v(22), "Mischia": v(23), "Resistenza": v(24), "Vigore": v(25),
+                        "Furtività": v(26), "Mira": v(27), "Movimento": v(28), "Rapidità": v(29),
+                        "Erudizione": v(30), "Intuito": v(31), "Percezione": v(32), "Sopravvivenza": v(33),
+                        "Addestramento": v(34), "Esibizione": v(35), "Guarigione": v(36), "Persuasione": v(37)
+                    }
+                };
+            }).filter(char => char.nome !== ""); // Rimuove eventuali righe vuote in fondo
+
+            renderMaster();
+            document.getElementById('loader').style.display = 'none';
+        } catch (e) {
+            document.getElementById('loader').innerHTML = "Errore nel caricamento dei dati.";
+            console.error("Dettaglio errore:", e);
+        }
+    }
+
+    function renderMaster() {
+        const list = document.getElementById('master-list');
+        list.innerHTML = characters.map(c => `
+            <div class="char-card" onclick="showDetail('${c.id}')">
+                <h2>${c.nome}</h2>
+                <p>${c.soprannome}</p>
+                <div style="margin-top:10px; color:var(--teal)">${c.stirpe} ${c.professione}</div>
+            </div>
+        `).join('');
+    }
+
+    function showDetail(id) {
+        const c = characters.find(x => x.id == id);
+        if (!c) return;
+        
+        const content = document.getElementById('sheet-content');
+        const skillHtml = Object.entries(c.abilita)
+            .filter(([_, val]) => val !== "" && val > 0)
+            .map(([name, val]) => `<div class="skill-item"><span>${name}</span><span>${val}</span></div>`)
+            .join('');
+
+        content.innerHTML = `
+            <div class="identity-section">
+                <h1>${c.nome}</h1>
+                <h2 style="font-style:italic; opacity:0.8">${c.soprannome}</h2>
+                <p style="font-size:1.3rem"><strong>${c.stirpe}</strong> — <strong>${c.professione}</strong> — Età: ${c.eta}</p>
+            </div>
+            <div class="values-bar">
+                <div class="val-item"><span class="val-num">${c.volonta}</span>VOLONTÀ</div>
+                <div class="val-item"><span class="val-num">${c.esperienza}</span>ESPERIENZA</div>
+                <div class="val-item"><span class="val-num">${c.reputazione}</span>REPUTAZIONE</div>
+            </div>
+            <div class="sheet-body">
+                <div class="left-col">
+                    <div class="attr-grid">
+                        <div class="attr-box"><span class="attr-label">Forza</span><span class="attr-val">${c.forza}</span></div>
+                        <div class="attr-box"><span class="attr-label">Agilità</span><span class="attr-val">${c.agilita}</span></div>
+                        <div class="attr-box"><span class="attr-label">Acume</span><span class="attr-val">${c.acume}</span></div>
+                        <div class="attr-box"><span class="attr-label">Empatia</span><span class="attr-val">${c.empatia}</span></div>
+                    </div>
+                    <div class="box">
+                        <h4>Abilità Addestrate</h4>
+                        <div class="skill-grid">${skillHtml || 'Nessuna abilità particolare.'}</div>
+                    </div>
+                    <div class="box">
+                        <h4>Doti e Talenti</h4>
+                        <p><strong>Dote Stirpe:</strong> ${c.doteStirpe}</p>
+                        <p><strong>Sentiero:</strong> ${c.doteSentiero}</p>
+                        <p><strong>Altre:</strong> ${c.dotiAltro.join(", ") || "-"}</p>
+                    </div>
+                    <div class="box">
+                        <h4>Cronache</h4>
+                        <p style="white-space: pre-wrap;">${c.background}</p>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <img src="${c.ritratto || 'https://via.placeholder.com/300x400'}" class="portrait">
+                    <div class="box"><h4>Orgoglio</h4><p><em>"${c.orgoglio}"</em></p></div>
+                    <div class="box"><h4>Segreto</h4><p><em>"${c.segreto}"</em></p></div>
+                </div>
+            </div>
+        `;
+        document.getElementById('master-list').style.display = 'none';
+        document.getElementById('main-header').style.display = 'none';
+        document.getElementById('detail-view').style.display = 'block';
+        window.scrollTo(0,0);
+    }
+
+    function showMaster() {
+        document.getElementById('detail-view').style.display = 'none';
+        document.getElementById('master-list').style.display = 'grid';
+        document.getElementById('main-header').style.display = 'block';
+    }
+
+    window.onload = init;
+
+    
+</script>
+
+</body>
+</html>
