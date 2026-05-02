@@ -160,16 +160,6 @@ function generaRigaAbilità(p, nomeAbilità, indexPersonaggio) {
             </button>
         </div>
     `;
-
-
-// CONSOLE LOG
-Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
-    console.log(`Sto cercando l'abilità: ${nomeAbil}. Valore nel foglio:`, p[nomeAbil]);
-    
-    if(p[nomeAbil]) {
-        html += generaRigaAbilità(p, nomeAbil);
-     }
-    });
 }
 
 window.onload = init;
