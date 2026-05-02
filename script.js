@@ -204,6 +204,12 @@ function spingiTiro() {
     renderLancio(); // Aggiorna il log con il nuovo risultato
 }
 
+function clearLog() {
+    const log = document.getElementById('dice-log');
+    if (log) {
+        log.innerHTML = '<p class="placeholder">Seleziona un\'abilità per lanciare i dadi</p>';
+    }
+}
 
 function visualizzaDadi(array) {
     // Trasforma i numeri in quadratini colorati
