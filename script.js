@@ -126,6 +126,14 @@ function modificaStat(index, statName, variazione) {
     }
 }
 
+function generaDadi(numero) {
+    let dadi = [];
+    for (let i = 0; i < numero; i++) {
+        // Genera un numero tra 1 e 6
+        dadi.push(Math.floor(Math.random() * 6) + 1);
+    }
+    return dadi;
+}
 
 function lanciaPool(etichetta, nomeAttr, numBase, numAbilità) {
     const numExtra = parseInt(document.getElementById('extra-dice').value) || 0;
