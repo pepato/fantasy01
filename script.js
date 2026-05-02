@@ -160,7 +160,7 @@ function generaRigaAbilità(p, nomeAbilità, indexPersonaggio) {
             </button>
         </div>
     `;
-}
+
 
 // CONSOLE LOG
 Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
@@ -168,8 +168,8 @@ Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
     
     if(p[nomeAbil]) {
         html += generaRigaAbilità(p, nomeAbil);
-    }
-});
-
+     }
+    });
+}
 
 window.onload = init;

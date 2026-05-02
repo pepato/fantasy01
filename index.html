@@ -25,11 +25,15 @@
         <!-- COLONNA DESTRA: Log dei Dadi -->
         <aside class="right-panel">
             <h2>Dice Vault</h2>
+            <div class="dice-modifier">
+                <label for="extra-dice">Dadi Extra (Equip/Aiuto):</label>
+                <input type="number" id="extra-dice" value="0" min="0" max="10">
+            </div>
+            
             <div id="dice-log">
-                <!-- Qui appariranno i risultati dei lanci -->
                 <p class="placeholder">Seleziona un'abilità per lanciare i dadi</p>
             </div>
-            <button onclick="clearLog()" class="btn-clear">Pulisci Log</button>
+                <button onclick="clearLog()" class="btn-clear">Pulisci Log</button>
         </aside>
     </div>
 
