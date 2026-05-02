@@ -126,6 +126,7 @@ function modificaStat(index, statName, variazione) {
     }
 }
 
+
 function lanciaPool(etichetta, nomeAttr, numBase, numAbilità) {
     const numExtra = parseInt(document.getElementById('extra-dice').value) || 0;
 
