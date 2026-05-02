@@ -6,8 +6,8 @@ const abilitàSuAttributo = {
     "Resistenza (Fo)": "Forza",
     "Vigore (Fo)": "Forza",
     "Furtività (Ag)": "Agilità",
-    "Movimento (Ag)": "Agilità",
     "Mira (Ag)": "Agilità",
+    "Movimento (Ag)": "Agilità",
     "Rapidità di mano (Ag)": "Agilità",
     "Erudizione (Ac)": "Acume",
     "Intuito (Ac)": "Acume",
@@ -16,8 +16,7 @@ const abilitàSuAttributo = {
     "Addestrare Animali (Em)": "Empatia",
     "Esibizione (Em)": "Empatia",
     "Guarire (Em)": "Empatia",
-    "Persuasione (Em)": "Empatia",
-    // ... e così via per tutte le altre
+    "Persuasione (Em)": "Empatia"
 };
 
 let personaggi = [];
@@ -162,5 +161,15 @@ function generaRigaAbilità(p, nomeAbilità, indexPersonaggio) {
         </div>
     `;
 }
+
+// CONSOLE LOG
+Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
+    console.log(`Sto cercando l'abilità: ${nomeAbil}. Valore nel foglio:`, p[nomeAbil]);
+    
+    if(p[nomeAbil]) {
+        html += generaRigaAbilità(p, nomeAbil);
+    }
+});
+
 
 window.onload = init;
