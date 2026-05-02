@@ -1,22 +1,22 @@
 // VARIABILI ------------------------------------
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSU3ngjAe_2drauShjCqUlVuETjbciigqF40uHF55cx5ja3bNHtzxMm1p2VaCo3-QiSs0R75hHcKcKX/pub?gid=0&single=true&output=csv";
 const abilitàSuAttributo = {
-    "Artigianato": "Forza",
-    "Mischia": "Forza",
-    "Resistenza": "Forza",
-    "Vigore": "Forza",
-    "Furtività": "Agilità",
-    "Movimento": "Agilità",
-    "Mira": "Agilità",
-    "Rapidità di mano": "Agilità",
-    "Erudizione": "Acume",
-    "Intuito": "Acume",
-    "Percezione": "Acume",
-    "Sopravvivenza": "Acume",
-    "Addestrare Animali": "Empatia",
-    "Esibizione": "Empatia",
-    "Guarire": "Empatia",
-    "Persuasione": "Empatia",
+    "Artigianato (Fo)": "Forza",
+    "Mischia (Fo)": "Forza",
+    "Resistenza (Fo)": "Forza",
+    "Vigore (Fo)": "Forza",
+    "Furtività (Ag)": "Agilità",
+    "Movimento (Ag)": "Agilità",
+    "Mira (Ag)": "Agilità",
+    "Rapidità di mano (Ag)": "Agilità",
+    "Erudizione (Ac)": "Acume",
+    "Intuito (Ac)": "Acume",
+    "Percezione (Ac)": "Acume",
+    "Sopravvivenza (Ac)": "Acume",
+    "Addestrare Animali (Em)": "Empatia",
+    "Esibizione (Em)": "Empatia",
+    "Guarire (Em)": "Empatia",
+    "Persuasione (Em)": "Empatia",
     // ... e così via per tutte le altre
 };
 
@@ -75,7 +75,7 @@ function mostraScheda(index) {
             <h3>Attributi (Danni/Malus)</h3>
             ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
             ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
-            ${generatoreWidgetAttributo(index, 'Intuito', p.acume_attuale)}
+            ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
             ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
         </div>
 
