@@ -1,5 +1,5 @@
 // VARIABILI ------------------------------------
-const sheetURL = "https://docs.google.com/spreadsheets/d/1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s/edit?usp=sharing";
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSU3ngjAe_2drauShjCqUlVuETjbciigqF40uHF55cx5ja3bNHtzxMm1p2VaCo3-QiSs0R75hHcKcKX/pub?gid=0&single=true&output=csv";
 const abilitàSuAttributo = {
     "Artigianato": "Forza",
     "Mischia": "Forza",
