@@ -126,6 +126,33 @@ function modificaStat(index, statName, variazione) {
     }
 }
 
+
+/* --- LE FUNZIONI DI SUPPORTO PER IL LANCIO --- */
+
+function lanciaPool(etichetta, nomeAttr, numBase, numAbilità) {
+    // 1. Recuperiamo i dadi extra dal campo input
+    const inputExtra = document.getElementById('extra-dice');
+    const numExtra = inputExtra ? parseInt(inputExtra.value) : 0;
+
+    // 2. Creiamo l'oggetto globale "ultimoLancio"
+    // Questo oggetto serve a "spingiTiro" per sapere cosa ritirare
+    ultimoLancio = {
+        label: etichetta,
+        attributo: nomeAttr,
+        dati: {
+            base: generaDadi(numBase),     // Dadi bianchi (Attributo)
+            abilita: generaDadi(numAbilità), // Dadi neri (Abilità)
+            extra: generaDadi(numExtra)     // Dadi verdi (Oggetti/Aiuto)
+        }
+    };
+
+    // 3. Chiamiamo la funzione che disegna i dadi a schermo
+    renderLancio();
+
+    // 4. Opzionale: resettiamo il campo dadi extra a zero dopo il lancio
+    if (inputExtra) inputExtra.value = 0;
+}
+
 function generaDadi(numero) {
     let dadi = [];
     for (let i = 0; i < numero; i++) {
@@ -135,22 +162,39 @@ function generaDadi(numero) {
     return dadi;
 }
 
-function lanciaPool(etichetta, nomeAttr, numBase, numAbilità) {
-    const numExtra = parseInt(document.getElementById('extra-dice').value) || 0;
+function renderLancio() {
+    const log = document.getElementById('dice-log');
+    if (!log) return; // Sicurezza se il log non esiste
+    
+    const l = ultimoLancio;
+    
+    // Calcoliamo i successi totali (tutti i 6)
+    const successi = [...l.dati.base, ...l.dati.abilita, ...l.dati.extra].filter(d => d === 6).length;
+    
+    const div = document.createElement('div');
+    div.className = 'lancio-container';
+    
+    // Costruiamo l'HTML del risultato
+    div.innerHTML = `
+        <div class="lancio-header">
+            <strong>${l.label}</strong>: ${successi > 0 ? '✔️ ' + successi + ' Successi' : '❌ Fallimento'}
+        </div>
+        <div class="pool-visual">
+            <div class="dice-group base">${visualizzaDadi(l.dati.base)}</div>
+            <div class="dice-group abilita">${visualizzaDadi(l.dati.abilita)}</div>
+            <div class="dice-group extra">${visualizzaDadi(l.dati.extra)}</div>
+        </div>
+        <button class="btn-push" onclick="spingiTiro()">Spingi il Tiro! ⚡</button>
+        <hr>
+    `;
+    
+    // Inseriamo in cima al log
+    log.prepend(div);
+}
 
-    ultimoLancio = {
-        label: etichetta,
-        attributo: nomeAttr,
-        dati: {
-            base: generaDadi(numBase),
-            abilita: generaDadi(numAbilità),
-            extra: generaDadi(numExtra)
-        }
-    };
-
-    renderLancio();
-    // Resettiamo i dadi extra a 0 dopo il lancio per sicurezza
-    document.getElementById('extra-dice').value = 0;
+function visualizzaDadi(array) {
+    // Trasforma i numeri in quadratini colorati
+    return array.map(d => `<span class="die val-${d}">${d}</span>`).join('');
 }
 
 function generaRigaAbilità(p, nomeAbilità, indexPersonaggio) {
