@@ -1,5 +1,5 @@
 // VARIABILI ------------------------------------
-const sheetURL = "IL_TUO_LINK_CSV_QUI";
+const sheetURL = "https://docs.google.com/spreadsheets/d/1yKMR0kwBxOljcdl9gQvK5KYOhsZPGC0ZsuZwxaIlr9s/edit?usp=sharing";
 const abilitàSuAttributo = {
     "Artigianato": "Forza",
     "Mischia": "Forza",
