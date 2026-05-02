@@ -61,7 +61,7 @@ function mostraScheda(index) {
     // Inizializziamo i valori "attuali" solo la prima volta che apriamo la scheda
     if(!p.forza_attuale) p.forza_attuale = parseInt(p.Forza);
     if(!p.agilita_attuale) p.agilita_attuale = parseInt(p.Agilità);
-    if(!p.intuito_attuale) p.intuito_attuale = parseInt(p.Intuito);
+    if(!p.acume_attuale) p.acume_attuale = parseInt(p.Acume);
     if(!p.empatia_attuale) p.empatia_attuale = parseInt(p.Empatia);
 
     // COSTRUZIONE HTML
@@ -75,7 +75,7 @@ function mostraScheda(index) {
             <h3>Attributi (Danni/Malus)</h3>
             ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
             ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
-            ${generatoreWidgetAttributo(index, 'Intuito', p.intuito_attuale)}
+            ${generatoreWidgetAttributo(index, 'Intuito', p.acume_attuale)}
             ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
         </div>
 
