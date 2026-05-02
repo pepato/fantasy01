@@ -1,130 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Fondamento&display=swap');
-@charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Almendra:wght@400;700&display=swap');
 
-        :root {
-            --dark-green: #1b261d;
-            --blood-red: #7a0000;
-            --brown: #3d2b1f;
-            --teal: #2d5a5a;
-            --parchment: #d9cbb3;
-            --ink: #1a1a1a;
-            --gold: #b08d57;
-        }
+body {
+    font-family: 'Almendra', serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    margin: 0;
+}
 
-        * { box-sizing: border-box; }
+.container {
+    display: flex; /* Crea le due colonne */
+    height: 100vh;
+}
 
-        body {
-            background-color: #0d0d0d;
-            background-image: url("https://www.transparenttextures.com/patterns/dark-matter.png");
-            color: var(--ink);
-            font-family: 'IM Fell DW Pica', serif;
-            margin: 0; padding: 20px;
-            line-height: 1.4;
-        }
+.left-panel {
+    flex: 2; /* Prende più spazio */
+    padding: 20px;
+    overflow-y: auto;
+    border-right: 2px solid #333;
+}
 
-        /* Intestazioni */
-        h1, h2, h3, h4 { font-family: 'IM Fell English SC', serif; text-transform: uppercase; margin: 0; }
+.right-panel {
+    flex: 1; /* Colonna più stretta per i dadi */
+    padding: 20px;
+    background-color: #222;
+}
 
-        .container { max-width: 1000px; margin: 0 auto; }
+/* LA TRANSIZIONE DI CUI PARLAVAMO */
+.nascosto {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+}
 
-        header { 
-            text-align: center; 
-            color: var(--gold); 
-            margin-bottom: 40px; 
-            border-bottom: 3px double var(--blood-red); 
-            padding-bottom: 20px; 
-        }
+.visibile {
+    opacity: 1;
+    max-height: 2000px;
+}
 
-        /* Master View (Griglia Personaggi) */
-        #master-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-        }
+/* Stile per le card dei personaggi nell'elenco */
+.char-card-mini {
+    background: #333;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
 
-        .char-card {
-            background: var(--parchment);
-            border: 5px solid var(--brown);
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.6);
-            background-image: url("https://www.transparenttextures.com/patterns/paper.png");
-        }
+.char-card-mini:hover {
+    transform: scale(1.02);
+    background: #444;
+}
+.log-entry {
+    background: #2a2a2a;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-left: 4px solid #b71c1c; /* Un rosso scuro molto Forbidden Lands */
+    animation: fadeIn 0.3s ease-out;
+}
 
-        .char-card:hover { 
-            transform: scale(1.02); 
-            border-color: var(--gold); 
-            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
-        }
+.dice-results {
+    font-size: 1.2em;
+    letter-spacing: 2px;
+    color: #ffd700; /* Oro per i numeri */
+}
 
-        .char-card h2 { color: var(--blood-red); border-bottom: 1px solid var(--brown); margin-bottom: 5px; }
-        .char-card p { font-style: italic; font-size: 1.1rem; margin: 0; }
+.success-count {
+    font-weight: bold;
+    color: #4caf50; /* Verde per i successi */
+}
 
-        /* Detail View (Scheda Personaggio) */
-        #detail-view {
-            display: none;
-            background: var(--parchment);
-            border: 12px solid var(--brown);
-            padding: 40px;
-            box-shadow: 0 0 60px black;
-            background-image: url("https://www.transparenttextures.com/patterns/parchment.png");
-            position: relative;
-        }
-
-        .back-btn {
-            background: var(--brown);
-            color: var(--gold);
-            border: 1px solid var(--gold);
-            padding: 8px 15px;
-            font-family: 'IM Fell English SC';
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: 0.2s;
-        }
-
-        .back-btn:hover { background: var(--blood-red); color: white; }
-
-        /* Struttura Scheda */
-        .identity-section { text-align: center; border-bottom: 2px solid var(--ink); margin-bottom: 25px; padding-bottom: 15px; }
-        .identity-section h1 { font-size: 3.5rem; color: var(--blood-red); }
-        
-        .attr-grid {
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
-            margin: 20px 0; background: var(--dark-green); padding: 20px;
-            border: 2px solid var(--gold); box-shadow: inset 0 0 10px black;
-        }
-        .attr-box { text-align: center; color: white; }
-        .attr-label { display: block; font-size: 0.8rem; color: var(--gold); text-transform: uppercase; }
-        .attr-val { font-size: 2.5rem; font-family: 'Special Elite', cursive; }
-
-        .values-bar { 
-            display: none;
-            /*display: flex; justify-content: space-around; */
-            background: var(--teal); color: white; padding: 15px; 
-            margin-bottom: 25px; border: 1px solid var(--gold);
-        }
-        .val-item { text-align: center; }
-        .val-num { display: block; font-size: 2rem; font-family: 'Special Elite'; line-height: 1; }
-
-        .sheet-body { display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
-
-        .box { border: 1px solid var(--brown); padding: 15px; margin-bottom: 20px; background: rgba(0,0,0,0.03); }
-        .box h4 { margin: 0 0 10px 0; border-bottom: 1px solid var(--blood-red); color: var(--blood-red); }
-
-        .skill-grid { columns: 2; column-gap: 20px; }
-        .skill-item { 
-            display: flex; justify-content: space-between; 
-            border-bottom: 1px dotted var(--brown); 
-            font-family: 'Special Elite'; font-size: 0.95rem; 
-            margin-bottom: 5px; 
-        }
-
-        .portrait { width: 100%; border: 6px double var(--brown); filter: sepia(0.4) contrast(1.1); margin-bottom: 20px; }
-
-        .loading { text-align: center; color: var(--gold); font-size: 2rem; padding: 100px; font-family: 'IM Fell English SC'; }
-
-        @media (max-width: 768px) {
-            .sheet-body { grid-template-columns: 1fr; }
-            .attr-grid { grid-template-columns: 1fr 1fr; }
-        }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
