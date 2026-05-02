@@ -20,6 +20,7 @@ const abilitàSuAttributo = {
 };
 
 let personaggi = [];
+let ultimoLancio = null; // per gestire log dei lanci
 
 // FUNZIONI ------------------------------------
 function init() {
@@ -191,6 +192,18 @@ function renderLancio() {
     // Inseriamo in cima al log
     log.prepend(div);
 }
+
+function spingiTiro() {
+    if (!ultimoLancio) return;
+
+    // Logica semplificata: tira di nuovo i dadi che non sono 1 o 6
+    ultimoLancio.dati.base = ultimoLancio.dati.base.map(d => (d === 1 || d === 6) ? d : Math.floor(Math.random() * 6) + 1);
+    ultimoLancio.dati.abilita = ultimoLancio.dati.abilita.map(d => (d === 6) ? d : Math.floor(Math.random() * 6) + 1);
+    ultimoLancio.dati.extra = ultimoLancio.dati.extra.map(d => (d === 6) ? d : Math.floor(Math.random() * 6) + 1);
+
+    renderLancio(); // Aggiorna il log con il nuovo risultato
+}
+
 
 function visualizzaDadi(array) {
     // Trasforma i numeri in quadratini colorati
