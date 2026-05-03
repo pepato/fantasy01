@@ -26,17 +26,13 @@ body {
     background-color: #222;
 }
 
-/* LA TRANSIZIONE DI CUI PARLAVAMO */
+
 .nascosto {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: opacity 0.5s ease-in-out, max-height 0.5s ease-in-out;
+    display: none !important;
 }
 
 .visibile {
-    opacity: 1;
-    max-height: 2000px;
+    display: block !important;
 }
 
 /* Stile per le card dei personaggi nell'elenco */
