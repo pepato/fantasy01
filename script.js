@@ -165,43 +165,59 @@ function generaDadi(numero) {
 
 function renderLancio() {
     const log = document.getElementById('dice-log');
-    if (!log) return; // Sicurezza se il log non esiste
+    if (!log) return;
     
     const l = ultimoLancio;
     
-    // Calcoliamo i successi totali (tutti i 6)
+    // Calcolo successi (tutti i 6)
     const successi = [...l.dati.base, ...l.dati.abilita, ...l.dati.extra].filter(d => d === 6).length;
-    
+    // Calcolo traumi (solo gli 1 sui dadi BASE)
+    const traumi = l.dati.base.filter(d => d === 1).length;
+
     const div = document.createElement('div');
     div.className = 'lancio-container';
     
-    // Costruiamo l'HTML del risultato
     div.innerHTML = `
         <div class="lancio-header">
-            <strong>${l.label}</strong>: ${successi > 0 ? '✔️ ' + successi + ' Successi' : '❌ Fallimento'}
+            <strong>${l.label}</strong><br>
+            <span class="res-succ">✨ Successi: ${successi}</span> | 
+            <span class="res-traum">💀 Teschi (Base): ${traumi}</span>
         </div>
         <div class="pool-visual">
-            <div class="dice-group base">${visualizzaDadi(l.dati.base)}</div>
-            <div class="dice-group abilita">${visualizzaDadi(l.dati.abilita)}</div>
-            <div class="dice-group extra">${visualizzaDadi(l.dati.extra)}</div>
+            <div class="dice-group">
+                <small>Base</small>
+                <div class="dice-list base">${visualizzaDadi(l.dati.base)}</div>
+            </div>
+            <div class="dice-group">
+                <small>Abilità</small>
+                <div class="dice-list abilita">${visualizzaDadi(l.dati.abilita)}</div>
+            </div>
+            <div class="dice-group">
+                <small>Extra</small>
+                <div class="dice-list extra">${visualizzaDadi(l.dati.extra)}</div>
+            </div>
         </div>
         <button class="btn-push" onclick="spingiTiro()">Spingi il Tiro! ⚡</button>
         <hr>
     `;
     
-    // Inseriamo in cima al log
     log.prepend(div);
 }
 
 function spingiTiro() {
     if (!ultimoLancio) return;
 
-    // Logica semplificata: tira di nuovo i dadi che non sono 1 o 6
+    // Logica Forbidden Lands:
+    // 1. Dadi Base: tieni 1 e 6, rilancia il resto
     ultimoLancio.dati.base = ultimoLancio.dati.base.map(d => (d === 1 || d === 6) ? d : Math.floor(Math.random() * 6) + 1);
+    
+    // 2. Dadi Abilità: tieni solo i 6, rilancia il resto (anche gli 1!)
     ultimoLancio.dati.abilita = ultimoLancio.dati.abilita.map(d => (d === 6) ? d : Math.floor(Math.random() * 6) + 1);
+    
+    // 3. Dadi Extra: tieni solo i 6, rilancia il resto
     ultimoLancio.dati.extra = ultimoLancio.dati.extra.map(d => (d === 6) ? d : Math.floor(Math.random() * 6) + 1);
 
-    renderLancio(); // Aggiorna il log con il nuovo risultato
+    renderLancio(); // Mostra il nuovo risultato nel log
 }
 
 function clearLog() {
