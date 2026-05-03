@@ -17,7 +17,7 @@
 
 body {
     font-family: 'IM Fell DW Pica', serif;
-    background-color: #1a1a1a;
+    background-color: #1a1a1a;  
     color: #e0e0e0;
     margin: 0;
 }
@@ -134,4 +134,35 @@ body {
     position: absolute; 
 }
 
+/* --- AGGIUSTAMENTI PER LO SROTOLAMENTO --- */
 
+/* Quando la lista è nascosta, non deve occupare spazio */
+#character-list.is-hidden {
+    display: none !important;
+}
+
+/* Stile della scheda srotolata (Effetto Pergamena) */
+#character-sheet.is-active {
+    background-color: var(--color-bg-paper);
+    color: var(--color-text); /* Testo nero sulla pergamena */
+    border: 1px solid #d3c6a1;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    margin-top: 20px;
+}
+
+/* Stile interno alla scheda per contrasto */
+#character-sheet.is-active h2, 
+#character-sheet.is-active h3, 
+#character-sheet.is-active strong {
+    color: var(--color-accent);
+}
+
+/* Riga abilità nella scheda */
+.skill-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}

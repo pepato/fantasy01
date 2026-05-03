@@ -36,52 +36,52 @@ function mostraElenco() {
     });
 }
 
-function mostraScheda(index) {
-    const p = personaggi[index];
-    const sheet = document.getElementById('character-sheet');
-    const list = document.getElementById('character-list'); // Selettore lista
+// function mostraScheda(index) {
+//     const p = personaggi[index];
+//     const sheet = document.getElementById('character-sheet');
+//     const list = document.getElementById('character-list'); // Selettore lista
     
-    // 1. Nascondi la lista personaggi
-    list.classList.add('nascosto');
+//     // 1. Nascondi la lista personaggi
+//     list.classList.add('nascosto');
     
-    // Inizializzazione valori attuali (se non presenti)
-    if(!p.forza_attuale) p.forza_attuale = parseInt(p.Forza);
-    if(!p.agilita_attuale) p.agilita_attuale = parseInt(p.Agilità);
-    if(!p.acume_attuale) p.acume_attuale = parseInt(p.Acume);
-    if(!p.empatia_attuale) p.empatia_attuale = parseInt(p.Empatia);
+//     // Inizializzazione valori attuali (se non presenti)
+//     if(!p.forza_attuale) p.forza_attuale = parseInt(p.Forza);
+//     if(!p.agilita_attuale) p.agilita_attuale = parseInt(p.Agilità);
+//     if(!p.acume_attuale) p.acume_attuale = parseInt(p.Acume);
+//     if(!p.empatia_attuale) p.empatia_attuale = parseInt(p.Empatia);
 
-    let html = `
-        <div class="character-header">
-            <!-- Pulsante per tornare alla lista -->
-            <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
-            <h2>${p.Nome}</h2>
-            <p><em>"${p.Soprannome}"</em> - ${p.Stirpe} ${p.Professione}</p>
-        </div>
+//     let html = `
+//         <div class="character-header">
+//             <!-- Pulsante per tornare alla lista -->
+//             <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
+//             <h2>${p.Nome}</h2>
+//             <p><em>"${p.Soprannome}"</em> - ${p.Stirpe} ${p.Professione}</p>
+//         </div>
 
-        <div class="stats-grid">
-            <h3>Attributi (Danni/Malus)</h3>
-            ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
-            ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
-            ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
-            ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
-        </div>
+//         <div class="stats-grid">
+//             <h3>Attributi (Danni/Malus)</h3>
+//             ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
+//             ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
+//             ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
+//             ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
+//         </div>
 
-        <div class="skills-section">
-            <h3>Abilità</h3>
-    `;
+//         <div class="skills-section">
+//             <h3>Abilità</h3>
+//     `;
 
-    Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
-        if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
-            html += generaRigaAbilità(p, nomeAbil, index);
-        }
-    });
+//     Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
+//         if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
+//             html += generaRigaAbilità(p, nomeAbil, index);
+//         }
+//     });
 
-    html += `</div>`;
+//     html += `</div>`;
 
-    sheet.innerHTML = html;
-    sheet.classList.remove('nascosto');
-    sheet.classList.add('visibile');
-}
+//     sheet.innerHTML = html;
+//     sheet.classList.remove('nascosto');
+//     sheet.classList.add('visibile');
+// }
 
 function chiudiScheda() {
     const sheet = document.getElementById('character-sheet');
@@ -115,33 +115,31 @@ function generaRigaAbilità(p, nomeAbilità, indexPersonaggio) {
     `;
 }
 
-// Gestione della visibilità con effetto Roll
+/* --- FUNZIONI VISUALIZZAZIONE BLOCCHI --- */
 function toggleView(showSheet) {
     const list = document.getElementById('character-list');
     const sheet = document.getElementById('character-sheet');
 
     if (showSheet) {
         list.classList.add('is-hidden');
-        // Timeout minimo per permettere al browser di processare l'innerHTML
+        // Delay minimo per permettere il rendering dell'HTML
         setTimeout(() => {
             sheet.classList.add('is-active');
         }, 50);
     } else {
         sheet.classList.remove('is-active');
-        // Aspettiamo la fine della transizione CSS (es. 0.8s) prima di mostrare la lista
         setTimeout(() => {
             list.classList.remove('is-hidden');
-            window.scrollTo(0, 0); // Riporta su la pagina per comodità
-        }, 800); 
+            window.scrollTo(0, 0);
+        }, 800); // 800ms corrisponde a --roll-speed nel CSS
     }
 }
 
-// Funzioni chiamate dai pulsanti
 function mostraScheda(index) {
-    costruisciSchedaHTML(index); // Chiama il montaggio in script.js
-    toggleView(true);            // Avvia lo srotolamento
+    costruisciSchedaHTML(index); // Chiama la logica in script.js
+    toggleView(true);
 }
 
 function chiudiScheda() {
-    toggleView(false);           // Avvia il riavvolgimento
+    toggleView(false);
 }
