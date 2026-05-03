@@ -1,6 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+DW+Pica&family=Special+Elite&display=swap'
 );
 
+:root {
+    /* Palette Forbidden Lands */
+    --color-bg-paper: #f4f1ea;      /* Grigio/crema pergamena */
+    --color-text: #1a1a1a;
+    --color-accent: #8b0000;        /* Rosso scuro per i bottoni/successi */
+    
+    /* Configurazione Roll Effect */
+    --roll-speed: 0.8s;
+    --roll-easing: cubic-bezier(0.645, 0.045, 0.355, 1); /* Effetto fluido tipo pergamena */
+    
+    /* Spaziature */
+    --panel-padding: 20px;
+}
+
 body {
     font-family: 'IM Fell DW Pica', serif;
     background-color: #1a1a1a;
@@ -86,6 +100,38 @@ body {
 
 
 
+/* Layout base dei pannelli */
+#character-list, #character-sheet {
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    width: 100%;
+}
 
+/* Pannello Scheda (Stato Arrotolato) */
+#character-sheet {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-20px); /* Parte leggermente più in alto */
+    transition: 
+        max-height var(--roll-speed) var(--roll-easing),
+        opacity var(--roll-speed) ease,
+        transform var(--roll-speed) var(--roll-easing);
+}
+
+/* Pannello Scheda (Stato Srotolato) */
+#character-sheet.is-active {
+    max-height: 3000px; /* Un valore molto alto per non bloccare lo srotolamento */
+    opacity: 1;
+    transform: translateY(0);
+    padding: var(--panel-padding);
+}
+
+/* Pannello Lista (Quando deve sparire) */
+#character-list.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+    /* Usiamo la posizione assoluta per toglierlo dal flusso senza rompere l'animazione dell'altro */
+    position: absolute; 
+}
 
 
