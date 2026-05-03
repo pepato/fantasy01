@@ -34,150 +34,54 @@ function init() {
     });
 }
 
-/* --- FUNZIONI PER VISUALIZZAZIONE BLOCCHI --- */
-function mostraElenco() {
-    const listContainer = document.getElementById('character-list');
-    listContainer.innerHTML = ''; // Pulisce
+/* --- COMPONENTI UI (I "Mattoncini") --- */
 
-    personaggi.forEach((p, index) => {
-        // Creiamo il div per ogni personaggio
-        const card = document.createElement('div');
-        card.className = 'char-card-mini';
-        card.innerHTML = `
-            <strong>${p.Nome}</strong> - ${p.Soprannome}<br>
-            <small>${p.Stirpe} | ${p.Professione}</small>
-        `;
-        
-        // AGGANCIAMO L'HANDLER (Il click per aprire la scheda)
-        card.onclick = () => mostraScheda(index);
-        
-        listContainer.appendChild(card);
-    });
-}
-
-
-/* function mostraScheda(index) {
-    const p = personaggi[index];
-    const sheet = document.getElementById('character-sheet');
-    
-    // Inizializziamo i valori "attuali" solo la prima volta che apriamo la scheda
-    if(!p.forza_attuale) p.forza_attuale = parseInt(p.Forza);
-    if(!p.agilita_attuale) p.agilita_attuale = parseInt(p.Agilità);
-    if(!p.acume_attuale) p.acume_attuale = parseInt(p.Acume);
-    if(!p.empatia_attuale) p.empatia_attuale = parseInt(p.Empatia);
-
-    // COSTRUZIONE HTML
-    let html = `
+function creaHeaderScheda(p) {
+    return `
         <div class="character-header">
-            <h2>${p.Nome}</h2>
-            <p><em>"${p.Soprannome}"</em> - ${p.Stirpe} ${p.Professione}</p>
-        </div>
-
-        <div class="stats-grid">
-            <h3>Attributi (Danni/Malus)</h3>
-            ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
-            ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
-            ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
-            ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
-        </div>
-
-        <div class="skills-section">
-            <h3>Abilità</h3>
-    `;
-
-    // Generiamo le righe delle abilità prendendole dalla mappa
-    Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
-        // Se nel DB quel personaggio ha un valore per quella abilità, crea la riga
-        if(p[nomeAbil] !== undefined) {
-            html += generaRigaAbilità(p, nomeAbil);
-        }
-    });
-
-    html += `</div>`; // Chiudiamo la sezione skills
-
-    // Stampiamo tutto nel DOM e rendiamo visibile
-    sheet.innerHTML = html;
-    sheet.classList.remove('nascosto');
-    sheet.classList.add('visibile');
-}*/
-
-function mostraScheda(index) {
-    const p = personaggi[index];
-    const sheet = document.getElementById('character-sheet');
-    const list = document.getElementById('character-list'); // Selettore lista
-    
-    // 1. Nascondi la lista personaggi
-    list.classList.add('nascosto');
-    
-    // Inizializzazione valori attuali (se non presenti)
-    if(!p.forza_attuale) p.forza_attuale = parseInt(p.Forza);
-    if(!p.agilita_attuale) p.agilita_attuale = parseInt(p.Agilità);
-    if(!p.acume_attuale) p.acume_attuale = parseInt(p.Acume);
-    if(!p.empatia_attuale) p.empatia_attuale = parseInt(p.Empatia);
-
-    let html = `
-        <div class="character-header">
-            <!-- Pulsante per tornare alla lista -->
             <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
             <h2>${p.Nome}</h2>
             <p><em>"${p.Soprannome}"</em> - ${p.Stirpe} ${p.Professione}</p>
-        </div>
+        </div>`;
+}
 
+function creaSezioneAttributi(p, index) {
+    return `
         <div class="stats-grid">
             <h3>Attributi (Danni/Malus)</h3>
             ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
             ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
             ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
             ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
-        </div>
+        </div>`;
+}
 
-        <div class="skills-section">
-            <h3>Abilità</h3>
-    `;
+/* --- FUNZIONE DI ASSEMBLAGGIO --- */
 
+function costruisciSchedaHTML(index) {
+    const p = personaggi[index];
+    const sheet = document.getElementById('character-sheet');
+    
+    // Inizializzazione valori attuali
+    p.forza_attuale = p.forza_attuale || parseInt(p.Forza);
+    p.agilita_attuale = p.agilita_attuale || parseInt(p.Agilità);
+    p.acume_attuale = p.acume_attuale || parseInt(p.Acume);
+    p.empatia_attuale = p.empatia_attuale || parseInt(p.Empatia);
+
+    // Assembliamo la scheda
+    let html = creaHeaderScheda(p);
+    html += creaSezioneAttributi(p, index);
+    
+    // Aggiunta dinamica abilità
+    html += `<div class="skills-section"><h3>Abilità</h3>`;
     Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
         if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
             html += generaRigaAbilità(p, nomeAbil, index);
         }
     });
-
     html += `</div>`;
 
     sheet.innerHTML = html;
-    sheet.classList.remove('nascosto');
-    sheet.classList.add('visibile');
-}
-
-function chiudiScheda() {
-    const sheet = document.getElementById('character-sheet');
-    const list = document.getElementById('character-list');
-
-    // Nasconde la scheda
-    sheet.classList.remove('visibile');
-    sheet.classList.add('nascosto');
-    sheet.innerHTML = ''; // Svuota il contenuto per pulizia
-
-    // Mostra la lista
-    list.classList.remove('nascosto');
-    list.classList.add('visibile');
-}
-
-function generaRigaAbilità(p, nomeAbilità, indexPersonaggio) {
-    const nomeAttr = abilitàSuAttributo[nomeAbilità]; 
-    // Prendiamo il valore attuale (quello con i malus)
-    const valAttrAttuale = p[`${nomeAttr.toLowerCase()}_attuale`];
-    // Prendiamo il valore base dell'abilità dal database
-    const valAbilitàBase = parseInt(p[nomeAbilità]) || 0;
-
-    return `
-        <div class="skill-row">
-            <span class="skill-name">${nomeAbilità}</span>
-            <span class="skill-value">${valAbilitàBase}</span>
-            <button class="btn-roll-skill" onclick="lanciaPool('${nomeAbilità}', '${nomeAttr}', ${valAttrAttuale}, ${valAbilitàBase})">
-                🎲
-            </button>
-        </div>
-    `;
 }
 
 /* --- HELPER PER I BOTTONI + e - DEGLI ATTRIBUTI --- */
