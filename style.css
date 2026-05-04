@@ -160,7 +160,7 @@ body {
 
 /* Riga abilità nella scheda */
 .skill-row {
-    display: flex;
+    /*display: flex;*/
     /*justify-content: space-between;*/
     /*align-items: center;*/
     padding: 8px 0;
