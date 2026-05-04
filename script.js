@@ -34,27 +34,7 @@ function init() {
     });
 }
 
-/* --- COMPONENTI UI (I "Mattoncini") --- */
 
-function creaHeaderScheda(p) {
-    return `
-        <div class="character-header">
-            <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
-            <h2>${p.Nome}</h2>
-            <p><em>"${p.Soprannome}"</em> - ${p.Stirpe} ${p.Professione}</p>
-        </div>`;
-}
-
-function creaSezioneAttributi(p, index) {
-    return `
-        <div class="stats-grid">
-            <h3>Attributi (Danni/Malus)</h3>
-            ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
-            ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
-            ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
-            ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
-        </div>`;
-}
 
 /* --- FUNZIONE DI ASSEMBLAGGIO --- */
 
@@ -112,6 +92,28 @@ function modificaStat(index, statName, variazione) {
     }
 }
 
+/* --- COMPONENTI UI (I "Mattoncini") --- */
+
+function creaHeaderScheda(p) {
+    return `
+        <div class="character-header">
+            <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
+            <h2>${p.Nome}</h2>
+            <p><em>"${p.Soprannome}"</em></p>
+            <h3>${p.Stirpe} - ${p.Professione}</h3>
+        </div>`;
+}
+
+function creaSezioneAttributi(p, index) {
+    return `
+        <div class="stats-grid">
+            <h3>Attributi (Danni/Malus)</h3>
+            ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
+            ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
+            ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
+            ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
+        </div>`;
+}
 
 /* --- LE FUNZIONI DI SUPPORTO PER IL LANCIO --- */
 
