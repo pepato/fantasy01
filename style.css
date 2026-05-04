@@ -161,8 +161,8 @@ body {
 /* Riga abilità nella scheda */
 .skill-row {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    /*justify-content: space-between;*/
+    /*align-items: center;*/
     padding: 8px 0;
     border-bottom: 1px solid rgba(0,0,0,0.1);
 }
