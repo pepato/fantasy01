@@ -48,8 +48,8 @@ function costruisciSchedaHTML(index) {
     p.acume_attuale = p.acume_attuale || parseInt(p.Acume);
     p.empatia_attuale = p.empatia_attuale || parseInt(p.Empatia);
     // Inizializzazione nuovi valori se non esistono
-    p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0;
-    p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0;
+    p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0);
+    p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0);
     p.reputazione_attuale = p.reputazione_attuale || parseInt(p.Reputazione || 0);
 
     // Assembliamo la scheda
