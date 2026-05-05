@@ -47,6 +47,10 @@ function costruisciSchedaHTML(index) {
     p.agilita_attuale = p.agilita_attuale || parseInt(p.Agilità);
     p.acume_attuale = p.acume_attuale || parseInt(p.Acume);
     p.empatia_attuale = p.empatia_attuale || parseInt(p.Empatia);
+    // Inizializzazione nuovi valori se non esistono
+    p.volonta_attuale = p.volonta_attuale || 0;
+    p.esperienza_attuale = p.esperienza_attuale || 0;
+    p.reputazione_attuale = p.reputazione_attuale || parseInt(p.Reputazione || 0);
 
     // Assembliamo la scheda
     let html = creaHeaderScheda(p);
@@ -101,6 +105,17 @@ function creaHeaderScheda(p) {
             <h2>${p.Nome}</h2>
             <p><em>"${p.Soprannome}"</em></p>
             <h3>${p.Stirpe} - ${p.Professione}</h3>
+        <img src="${p.Ritratto}" class="char-portrait" alt="Ritratto">
+        </div>
+        <div class="char-details">
+            <p><strong>Background:</strong> ${p.Background}</p>
+            <p><strong>Orgoglio:</strong> ${p.Orgoglio}</p>
+            <p><strong>Segreto Oscuro:</strong> ${p["Segreto Oscuro"]}</p>
+        </div>
+        <div class="counters-row">
+            ${generatoreWidgetSemplice(index, 'Volontà', p.volonta_attuale, 'volonta_attuale')}
+            ${generatoreWidgetSemplice(index, 'Esperienza', p.esperienza_attuale, 'esperienza_attuale')}
+            ${generatoreWidgetSemplice(index, 'Reputazione', p.reputazione_attuale, 'reputazione_attuale')}
         </div>`;
 }
 
@@ -219,6 +234,24 @@ function visualizzaDadi(array) {
     return array.map(d => `<span class="die val-${d}">${d}</span>`).join('');
 }
 
+function generatoreWidgetSemplice(idx, label, valore, campoDinamico) {
+    return `
+        <div class="counter-item">
+            <label>${label}</label>
+            <div class="control-group">
+                <button onclick="modificaCampoDiretto(${idx}, '${campoDinamico}', -1)">-</button>
+                <span>${valore}</span>
+                <button onclick="modificaCampoDiretto(${idx}, '${campoDinamico}', 1)">+</button>
+            </div>
+        </div>
+    `;
+}
+
+function modificaCampoDiretto(index, campo, delta) {
+    personaggi[index][campo] += delta;
+    if (personaggi[index][campo] < 0) personaggi[index][campo] = 0;
+    mostraScheda(index); // Rinfresca la scheda
+}
 
 
 window.onload = init;
