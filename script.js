@@ -53,7 +53,7 @@ function costruisciSchedaHTML(index) {
     p.reputazione_attuale = p.reputazione_attuale || parseInt(p.Reputazione || 0);
 
     // Assembliamo la scheda
-    let html = creaHeaderScheda(p);
+    let html = creaHeaderScheda(p, index);
     html += creaSezioneAttributi(p, index);
     
     // Aggiunta dinamica abilità
@@ -98,7 +98,7 @@ function modificaStat(index, statName, variazione) {
 
 /* --- COMPONENTI UI (I "Mattoncini") --- */
 
-function creaHeaderScheda(p) {
+function creaHeaderScheda(p, index) {
     return `
         <div class="character-header">
             <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
