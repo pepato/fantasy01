@@ -38,8 +38,38 @@ function init() {
 
 /* --- FUNZIONE DI ASSEMBLAGGIO --- */
 
+// function costruisciSchedaHTML(index) {
+//     const p = personaggi[index];
+//     const sheet = document.getElementById('character-sheet');
+    
+//     // Inizializzazione valori attuali
+//     p.forza_attuale = p.forza_attuale || parseInt(p.Forza);
+//     p.agilita_attuale = p.agilita_attuale || parseInt(p.Agilità);
+//     p.acume_attuale = p.acume_attuale || parseInt(p.Acume);
+//     p.empatia_attuale = p.empatia_attuale || parseInt(p.Empatia);
+//     // Inizializzazione nuovi valori se non esistono
+//     p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0);
+//     p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0);
+//     p.reputazione_attuale = p.reputazione_attuale || parseInt(p.Reputazione || 0);
+
+//     // Assembliamo la scheda
+//     let html = creaHeaderScheda(p, index);
+//     html += creaSezioneAttributi(p, index);
+    
+//     // Aggiunta dinamica abilità
+//     html += `<div class="skills-section"><h3>Abilità</h3>`;
+//     Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
+//         if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
+//             html += generaRigaAbilità(p, nomeAbil, index);
+//         }
+//     });
+//     html += `</div>`;
+
+//     sheet.innerHTML = html;
+// }
+
 function costruisciSchedaHTML(index) {
-    const p = personaggi[index];
+     const p = personaggi[index];
     const sheet = document.getElementById('character-sheet');
     
     // Inizializzazione valori attuali
@@ -51,19 +81,43 @@ function costruisciSchedaHTML(index) {
     p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0);
     p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0);
     p.reputazione_attuale = p.reputazione_attuale || parseInt(p.Reputazione || 0);
-
-    // Assembliamo la scheda
-    let html = creaHeaderScheda(p, index);
-    html += creaSezioneAttributi(p, index);
     
-    // Aggiunta dinamica abilità
-    html += `<div class="skills-section"><h3>Abilità</h3>`;
-    Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
-        if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
-            html += generaRigaAbilità(p, nomeAbil, index);
-        }
-    });
-    html += `</div>`;
+    // Header (sempre in alto)
+    let html = creaHeaderScheda(p, index); 
+
+    // Apertura contenitore Layout a due colonne
+    html += `<div class="sheet-grid-container">`;
+
+    // --- COLONNA SINISTRA (Valori, Attributi, Abilità) ---
+    html += `<div class="sheet-left-side">`;
+        html += `
+            <div class="counters-row">
+                ${generatoreWidgetSemplice(index, 'Volontà', p.volonta_attuale, 'volonta_attuale')}
+                ${generatoreWidgetSemplice(index, 'Reputazione', p.reputazione_attuale, 'reputazione_attuale')}
+                ${generatoreWidgetSemplice(index, 'Esperienza', p.esperienza_attuale, 'esperienza_attuale')}
+            </div>`;
+        html += creaSezioneAttributi(p, index);
+        html += `<div class="skills-section"><h3>Abilità</h3>`;
+            Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
+                if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
+                    html += generaRigaAbilità(p, nomeAbil, index);
+                }
+            });
+        html += `</div>`;
+    html += `</div>`; // fine sinistra
+
+    // --- COLONNA DESTRA (Ritratto, Orgoglio, Segreto, Background) ---
+    html += `<div class="sheet-right-side">`;
+        html += `
+            <div class="char-details-vertical">
+                <img src="${p.Ritratto}" class="char-portrait-large" alt="Ritratto">
+                <div class="detail-box"><strong>Orgoglio:</strong><p>${p.Orgoglio || '...'}</p></div>
+                <div class="detail-box"><strong>Segreto Oscuro:</strong><p>${p["Segreto Oscuro"] || '...'}</p></div>
+                <div class="detail-box"><strong>Background:</strong><p>${p.Background || '...'}</p></div>
+            </div>`;
+    html += `</div>`; // fine destra
+
+    html += `</div>`; // fine grid-container
 
     sheet.innerHTML = html;
 }

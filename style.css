@@ -219,3 +219,58 @@ body {
     padding: 2px 8px;
     border-radius: 3px;
 }
+
+/* 1. Fix Scorrimento */
+.left-panel {
+    overflow-y: auto !important; /* Assicura che il pannello principale scorra */
+}
+
+#character-sheet.is-active {
+    max-height: none; /* Rimuoviamo il limite una volta aperto per permettere lo scorrimento */
+    overflow: visible; /* Permette al contenuto di espandersi */
+}
+
+/* 2. Grid System per la scheda */
+.sheet-grid-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+.sheet-left-side {
+    flex: 1.5; /* Più spazio per le abilità */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sheet-right-side {
+    flex: 1; /* Spazio per i dettagli narrativi */
+    position: sticky; /* Il ritratto resta visibile mentre scorri le abilità */
+    top: 20px;
+}
+
+/* 3. Estetica Dettagli Destra */
+.char-portrait-large {
+    width: 100%;
+    max-width: 250px;
+    border: 4px solid var(--color-accent);
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.detail-box {
+    background: rgba(0,0,0,0.05);
+    padding: 10px;
+    margin-bottom: 15px;
+    border-left: 3px solid var(--color-accent);
+    font-size: 0.9em;
+}
+
+.detail-box strong {
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    margin-bottom: 5px;
+}
