@@ -69,7 +69,7 @@ function init() {
 // }
 
 function costruisciSchedaHTML(index) {
-     const p = personaggi[index];
+    const p = personaggi[index];
     const sheet = document.getElementById('character-sheet');
     
     // Inizializzazione valori attuali
@@ -81,7 +81,7 @@ function costruisciSchedaHTML(index) {
     p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0);
     p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0);
     p.reputazione_attuale = p.reputazione_attuale || parseInt(p.Reputazione || 0);
-    
+
     // Header (sempre in alto)
     let html = creaHeaderScheda(p, index); 
 
@@ -159,17 +159,7 @@ function creaHeaderScheda(p, index) {
             <h2>${p.Nome}</h2>
             <p><em>"${p.Soprannome}"</em></p>
             <h3>${p.Stirpe} - ${p.Professione}</h3>
-        <img src="${p.Ritratto}" class="char-portrait" alt="Ritratto">
-        </div>
-        <div class="char-details">
-            <p><strong>Background:</strong> ${p.Background}</p>
-            <p><strong>Orgoglio:</strong> ${p.Orgoglio}</p>
-            <p><strong>Segreto Oscuro:</strong> ${p["Segreto Oscuro"]}</p>
-        </div>
-        <div class="counters-row">
-            ${generatoreWidgetSemplice(index, 'Volontà', p.volonta_attuale, 'volonta_attuale')}
-            ${generatoreWidgetSemplice(index, 'Esperienza', p.esperienza_attuale, 'esperienza_attuale')}
-            ${generatoreWidgetSemplice(index, 'Reputazione', p.reputazione_attuale, 'reputazione_attuale')}
+        
         </div>`;
 }
 
