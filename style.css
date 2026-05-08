@@ -166,14 +166,7 @@ body {
     color: var(--color-accent);
 }
 
-/* Riga abilità nella scheda */
-.skill-row {
-    /*display: flex;*/
-    /*justify-content: space-between;*/
-    /*align-items: center;*/
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-}
+
 
 .header-main {
     display: flex;
@@ -196,6 +189,28 @@ body {
     background: rgba(0,0,0,0.05);
     border-radius: 5px;
     font-size: 0.95em;
+}
+
+.skill-row {
+    display: flex;             /* Forza gli elementi uno a fianco all'altro */
+    justify-content: space-between; /* Nome a sinistra, valore/dado a destra */
+    align-items: center;       /* Allinea perfettamente al centro in verticale */
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    white-space: nowrap;       /* Impedisce al testo di andare a capo */
+}
+
+.skill-name {
+    flex: 1;                  /* Prende tutto lo spazio disponibile a sinistra */
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;  /* Se il nome è lunghissimo, mette i puntini invece di rompere la riga */
+}
+
+.skill-value {
+    display: flex;
+    align-items: center;
+    gap: 15px;                 /* Spazio tra il numero e il dado */
 }
 
 .counters-row {
