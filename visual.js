@@ -97,13 +97,12 @@ function chiudiScheda() {
     list.classList.add('visibile');
 }
 
-function generaRigaAbilità(p, nomeAbilità, indexPersonaggio) {
+function generaRigaAbilità(p, nomeAbilità, indexPersonaggio, valoreForzato) {
     const nomeAttr = abilitàSuAttributo[nomeAbilità]; 
     // Prendiamo il valore attuale (quello con i malus)
     const valAttrAttuale = p[`${nomeAttr.toLowerCase()}_attuale`];
     // Prendiamo il valore base dell'abilità dal database
-    const valAbilitàBase = parseInt(p[nomeAbilità]) || 0;
-
+    const valAbilità = valoreForzato; // Usa il valore che abbiamo passato
     return `
         <div class="skill-row">
             <span class="skill-name">${nomeAbilità}</span>

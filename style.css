@@ -41,7 +41,6 @@ body {
 .right-panel {
     flex: 1; /* Colonna più stretta per i dadi */
     padding: 20px;
-    background-color: #222;
 }
 
 
@@ -90,17 +89,19 @@ body {
     to { opacity: 1; transform: translateX(0); }
 }
 
+
+
 /* Colori dei dadi */
-.dice-list.base .die { background: #eee; color: #333; border: 2px solid #333; padding: 2px; } /* Bianchi */
-.dice-list.abilita .die { background: #333; color: #fff; border: 2px solid #000; padding: 2px;} /* Neri */
-.dice-list.extra .die { background: #2e7d32; color: #fff; border: 2px solid #1b5e20; padding: 2px;} /* Verdi */
+/*.dice-list.base .die { background: #eee; color: #333; border: 2px solid #333; padding: 2px; } /* Bianchi */*/
+/*.dice-list.abilita .die { background: #333; color: #fff; border: 2px solid #000; padding: 2px;} /* Neri */*/
+/*.dice-list.extra .die { background: #2e7d32; color: #fff; border: 2px solid #1b5e20; padding: 2px;} /* Verdi */*/
 
 /* Evidenzia i risultati critici */
-.die.val-6 { border-color: #ffd700; box-shadow: 0 0 5px #ffd700; font-weight: bold; padding: 2px;}
-.dice-list.base .die.val-1 { border-color: #d32f2f; color: #d32f2f; font-weight: bold; padding: 2px;}
+/*.die.val-6 { border-color: #ffd700; box-shadow: 0 0 5px #ffd700; font-weight: bold; padding: 2px;}*/
+/*.dice-list.base .die.val-1 { border-color: #d32f2f; color: #d32f2f; font-weight: bold; padding: 2px;}*/
 
-.res-succ { color: #f9a825; font-weight: bold; padding: 2px;}
-.res-traum { color: #d32f2f; font-weight: bold; padding: 2px;}
+/*.res-succ { color: #f9a825; font-weight: bold; padding: 2px;}*/
+/*.res-traum { color: #d32f2f; font-weight: bold; padding: 2px;}*/*/
 
 
 
@@ -273,4 +274,69 @@ body {
     text-transform: uppercase;
     font-size: 0.8em;
     margin-bottom: 5px;
+}
+
+/* --- DICE VAULT FLUIDO --- */
+.right-panel {
+    flex: 1;
+    min-width: 300px; /* Impedisce che diventi troppo stretta */
+    background-color: #1a1a1a;
+    border-left: 2px solid var(--color-accent);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- DADI FISICI E GRANDI --- */
+.die {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;  /* Più grandi */
+    height: 45px;
+    margin: 4px;
+    border-radius: 8px; /* Bordi arrotondati */
+    font-size: 1.5em;   /* Leggibilità */
+    font-family: 'Special Elite', cursive;
+    font-weight: bold;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    animation: dieRoll 0.4s ease-out; /* Effetto lancio */
+}
+
+@keyframes dieRoll {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+/* Colori specifici dadi */
+.dice-list.base .die { background: #fff; color: #000; border: 2px solid #ccc; }
+.dice-list.abilita .die { background: #333; color: #fff; border: 2px solid #000; }
+.dice-list.extra .die { background: #4a7c44; color: #fff; border: 2px solid #2e4d2b; }
+
+/* Evidenzia 6 e 1 */
+.die.val-6 { background: #f9a825 !important; color: #000 !important; border: 2px solid #000; }
+.dice-list.base .die.val-1 { background: #b71c1c !important; color: #fff !important; }
+
+/* Bottoni e Modificatori */
+.btn-clear {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    cursor: pointer;
+    font-family: 'IM Fell English SC', serif;
+}
+
+.btn-clear:hover { background: var(--color-accent); color: white; }
+
+.dice-modifier input {
+    width: 50px;
+    background: #333;
+    border: 1px solid #555;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    font-size: 1.2em;
 }

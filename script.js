@@ -1,5 +1,6 @@
 // VARIABILI ------------------------------------
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSU3ngjAe_2drauShjCqUlVuETjbciigqF40uHF55cx5ja3bNHtzxMm1p2VaCo3-QiSs0R75hHcKcKX/pub?gid=0&single=true&output=csv";
+//const sheetURL = "personaggi.csv";
 const abilitàSuAttributo = {
     "Artigianato (Fo)": "Forza",
     "Mischia (Fo)": "Forza",
@@ -98,10 +99,11 @@ function costruisciSchedaHTML(index) {
             </div>`;
         html += creaSezioneAttributi(p, index);
         html += `<div class="skills-section"><h3>Abilità</h3>`;
+            // Cicliamo su TUTTE le abilità definite nel dizionario iniziale
             Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
-                if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
-                    html += generaRigaAbilità(p, nomeAbil, index);
-                }
+                // Se il valore nel foglio è vuoto o mancante, usiamo 0
+                const valoreAbil = p[nomeAbil] ? parseInt(p[nomeAbil]) : 0;
+                html += generaRigaAbilità(p, nomeAbil, index, valoreAbil);
             });
         html += `</div>`;
     html += `</div>`; // fine sinistra
@@ -213,6 +215,10 @@ function renderLancio() {
     const log = document.getElementById('dice-log');
     if (!log) return;
     
+    // Rimuovi il placeholder se presente
+    const placeholder = log.querySelector('.placeholder');
+    if (placeholder) placeholder.remove();
+
     const l = ultimoLancio;
     
     // Calcolo successi (tutti i 6)
@@ -221,30 +227,23 @@ function renderLancio() {
     const traumi = l.dati.base.filter(d => d === 1).length;
 
     const div = document.createElement('div');
-    div.className = 'lancio-container';
-    
+    div.className = 'lancio-container log-entry'; // Usa log-entry che ha già il bordo rosso    
+   
+    // Usiamo una tabella o dei flexbox per rendere i risultati più ordinati
     div.innerHTML = `
         <div class="lancio-header">
-            <strong>${l.label}</strong><br>
-            <span class="res-succ">✨ Successi: ${successi}</span> | 
-            <span class="res-traum">💀 Teschi (Base): ${traumi}</span>
+            <strong>${l.label.toUpperCase()}</strong>
+            <div class="res-summary">
+                <span class="res-succ">✨ ${successi}</span> | 
+                <span class="res-traum">💀 ${traumi}</span>
+            </div>
         </div>
         <div class="pool-visual">
-            <div class="dice-group">
-                <small>Base</small>
-                <div class="dice-list base">${visualizzaDadi(l.dati.base)}</div>
-            </div>
-            <div class="dice-group">
-                <small>Abilità</small>
-                <div class="dice-list abilita">${visualizzaDadi(l.dati.abilita)}</div>
-            </div>
-            <div class="dice-group">
-                <small>Extra</small>
-                <div class="dice-list extra">${visualizzaDadi(l.dati.extra)}</div>
-            </div>
+            <div class="dice-group"><div class="dice-list base">${visualizzaDadi(l.dati.base)}</div></div>
+            <div class="dice-group"><div class="dice-list abilita">${visualizzaDadi(l.dati.abilita)}</div></div>
+            <div class="dice-group"><div class="dice-list extra">${visualizzaDadi(l.dati.extra)}</div></div>
         </div>
-        <button class="btn-push" onclick="spingiTiro()">Spingi il Tiro! ⚡</button>
-        <hr>
+        <button class="btn-push" onclick="spingiTiro()">SPINGI IL TIRO! ⚡</button>
     `;
     
     log.prepend(div);
