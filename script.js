@@ -44,10 +44,11 @@ function costruisciSchedaHTML(index) {
     const sheet = document.getElementById('character-sheet');
     
     // Inizializzazione valori attuali
-    p.forza_attuale = p.forza_attuale || parseInt(p.Forza);
-    p.agilita_attuale = p.agilita_attuale || parseInt(p.Agilità);
-    p.acume_attuale = p.acume_attuale || parseInt(p.Acume);
-    p.empatia_attuale = p.empatia_attuale || parseInt(p.Empatia);
+    // script.js - Intorno alla riga 50
+    p.forza_attuale = p.forza_attuale || parseInt(p["Forza"] || 0);
+    p.agilita_attuale = p.agilita_attuale || parseInt(p["Agilità"] || 0);
+    p.acume_attuale = p.acume_attuale || parseInt(p["Acume"] || 0);
+    p.empatia_attuale = p.empatia_attuale || parseInt(p["Empatia"] || 0);
     // Inizializzazione nuovi valori se non esistono
     p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0);
     p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0);
@@ -96,8 +97,8 @@ function costruisciSchedaHTML(index) {
 
 /* --- HELPER PER I BOTTONI + e - DEGLI ATTRIBUTI --- */
 function generatoreWidgetAttributo(idx, nome, valore) {
-    // MODIFICA QUI: aggiungiamo .replace("à", "a")
-    const campoDinamico = `${nome.toLowerCase().replace("à", "a")}_attuale`;
+    // Trasformiamo il nome in minuscolo e togliamo l'accento solo per Agilità
+    const campoDinamico = nome.toLowerCase().replace("à", "a") + "_attuale";
     
     return `
         <div class="attribute-item">

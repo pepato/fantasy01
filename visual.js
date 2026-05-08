@@ -51,19 +51,19 @@ function chiudiScheda() {
     list.classList.add('visibile');
 }
 
-function generaRigaAbilità(p, nomeAbilità, indexPersonaggio, valoreForzato) {
+function generaRigaAbilità(p, nomeAbilità, indexPersonaggio, valoreAbilitaPassato) {
     const nomeAttr = abilitàSuAttributo[nomeAbilità]; 
-    // Prendiamo il valore attuale (quello con i malus)
-    const campoAttr = `${nomeAttr.toLowerCase().replace("à", "a")}_attuale`; // strippiamo gli accenti
-    const valAttrAttuale = p[campoAttr];
-    // Prendiamo il valore base dell'abilità dal database
-    const valAbilità = valoreForzato; // Usa il valore che abbiamo passato
+    
+    // Usiamo la stessa identica logica del punto 2
+    const campoAttr = nomeAttr.toLowerCase().replace("à", "a") + "_attuale";
+    const valAttrAttuale = p[campoAttr] || 0;
+
     return `
         <div class="skill-row">
             <span class="skill-name">${nomeAbilità}</span>
-            <div class="skill-value">
-                <span class="skill-value">${valAbilità}</span>
-                <button class="btn-roll-skill" onclick="lanciaPool('${nomeAbilità}', '${nomeAttr}', ${valAttrAttuale}, ${valAbilità})">
+            <div class="skill-right">
+                <span class="skill-value">${valoreAbilitaPassato}</span>
+                <button class="btn-roll-skill" onclick="lanciaPool('${nomeAbilità}', '${nomeAttr}', ${valAttrAttuale}, ${valoreAbilitaPassato})">
                     🎲
                 </button>
             </div>
