@@ -36,52 +36,6 @@ function mostraElenco() {
     });
 }
 
-// function mostraScheda(index) {
-//     const p = personaggi[index];
-//     const sheet = document.getElementById('character-sheet');
-//     const list = document.getElementById('character-list'); // Selettore lista
-    
-//     // 1. Nascondi la lista personaggi
-//     list.classList.add('nascosto');
-    
-//     // Inizializzazione valori attuali (se non presenti)
-//     if(!p.forza_attuale) p.forza_attuale = parseInt(p.Forza);
-//     if(!p.agilita_attuale) p.agilita_attuale = parseInt(p.Agilità);
-//     if(!p.acume_attuale) p.acume_attuale = parseInt(p.Acume);
-//     if(!p.empatia_attuale) p.empatia_attuale = parseInt(p.Empatia);
-
-//     let html = `
-//         <div class="character-header">
-//             <!-- Pulsante per tornare alla lista -->
-//             <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
-//             <h2>${p.Nome}</h2>
-//             <p><em>"${p.Soprannome}"</em> - ${p.Stirpe} ${p.Professione}</p>
-//         </div>
-
-//         <div class="stats-grid">
-//             <h3>Attributi (Danni/Malus)</h3>
-//             ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
-//             ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
-//             ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
-//             ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
-//         </div>
-
-//         <div class="skills-section">
-//             <h3>Abilità</h3>
-//     `;
-
-//     Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
-//         if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
-//             html += generaRigaAbilità(p, nomeAbil, index);
-//         }
-//     });
-
-//     html += `</div>`;
-
-//     sheet.innerHTML = html;
-//     sheet.classList.remove('nascosto');
-//     sheet.classList.add('visibile');
-// }
 
 function chiudiScheda() {
     const sheet = document.getElementById('character-sheet');
@@ -100,7 +54,8 @@ function chiudiScheda() {
 function generaRigaAbilità(p, nomeAbilità, indexPersonaggio, valoreForzato) {
     const nomeAttr = abilitàSuAttributo[nomeAbilità]; 
     // Prendiamo il valore attuale (quello con i malus)
-    const valAttrAttuale = p[`${nomeAttr.toLowerCase()}_attuale`];
+    const campoAttr = `${nomeAttr.toLowerCase().replace("à", "a")}_attuale`; // strippiamo gli accenti
+    const valAttrAttuale = p[campoAttr];
     // Prendiamo il valore base dell'abilità dal database
     const valAbilità = valoreForzato; // Usa il valore che abbiamo passato
     return `

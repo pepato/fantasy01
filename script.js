@@ -39,36 +39,6 @@ function init() {
 
 /* --- FUNZIONE DI ASSEMBLAGGIO --- */
 
-// function costruisciSchedaHTML(index) {
-//     const p = personaggi[index];
-//     const sheet = document.getElementById('character-sheet');
-    
-//     // Inizializzazione valori attuali
-//     p.forza_attuale = p.forza_attuale || parseInt(p.Forza);
-//     p.agilita_attuale = p.agilita_attuale || parseInt(p.Agilità);
-//     p.acume_attuale = p.acume_attuale || parseInt(p.Acume);
-//     p.empatia_attuale = p.empatia_attuale || parseInt(p.Empatia);
-//     // Inizializzazione nuovi valori se non esistono
-//     p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0);
-//     p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0);
-//     p.reputazione_attuale = p.reputazione_attuale || parseInt(p.Reputazione || 0);
-
-//     // Assembliamo la scheda
-//     let html = creaHeaderScheda(p, index);
-//     html += creaSezioneAttributi(p, index);
-    
-//     // Aggiunta dinamica abilità
-//     html += `<div class="skills-section"><h3>Abilità</h3>`;
-//     Object.keys(abilitàSuAttributo).forEach(nomeAbil => {
-//         if(p[nomeAbil] !== undefined && p[nomeAbil] !== "") {
-//             html += generaRigaAbilità(p, nomeAbil, index);
-//         }
-//     });
-//     html += `</div>`;
-
-//     sheet.innerHTML = html;
-// }
-
 function costruisciSchedaHTML(index) {
     const p = personaggi[index];
     const sheet = document.getElementById('character-sheet');
@@ -125,14 +95,18 @@ function costruisciSchedaHTML(index) {
 }
 
 /* --- HELPER PER I BOTTONI + e - DEGLI ATTRIBUTI --- */
-function generatoreWidgetAttributo(idx, nome, attuale) {
-    const nomeStatDinamica = `${nome.toLowerCase()}_attuale`;
+function generatoreWidgetAttributo(idx, nome, valore) {
+    // MODIFICA QUI: aggiungiamo .replace("à", "a")
+    const campoDinamico = `${nome.toLowerCase().replace("à", "a")}_attuale`;
+    
     return `
-        <div class="stat-control">
-            <strong>${nome}: </strong>
-            <button onclick="modificaStat(${idx}, '${nomeStatDinamica}', -1)">-</button>
-            <span class="stat-number">${attuale}</span>
-            <button onclick="modificaStat(${idx}, '${nomeStatDinamica}', 1)">+</button>
+        <div class="attribute-item">
+            <label>${nome}</label>
+            <div class="control-group">
+                <button onclick="modificaAttributo(${idx}, '${campoDinamico}', -1)">-</button>
+                <span>${valore}</span>
+                <button onclick="modificaAttributo(${idx}, '${campoDinamico}', 1)">+</button>
+            </div>
         </div>
     `;
 }
