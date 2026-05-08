@@ -106,10 +106,12 @@ function generaRigaAbilità(p, nomeAbilità, indexPersonaggio, valoreForzato) {
     return `
         <div class="skill-row">
             <span class="skill-name">${nomeAbilità}</span>
-            <span class="skill-value">${valAbilitàBase}</span>
-            <button class="btn-roll-skill" onclick="lanciaPool('${nomeAbilità}', '${nomeAttr}', ${valAttrAttuale}, ${valAbilitàBase})">
-                🎲
-            </button>
+            <div class="skill-right">
+                <span class="skill-value">${valAbilità}</span>
+                <button class="btn-roll-skill" onclick="lanciaPool('${nomeAbilità}', '${nomeAttr}', ${valAttrAttuale}, ${valAbilità})">
+                    🎲
+                </button>
+            </div>
         </div>
     `;
 }
