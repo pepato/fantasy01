@@ -46,7 +46,7 @@ function costruisciSchedaHTML(index) {
     // Inizializzazione valori attuali
     // script.js - Intorno alla riga 50
     p.forza_attuale = p.forza_attuale || parseInt(p["Forza"] || 0);
-    p.agilita_attuale = p.agilita_attuale || parseInt(p["Agilità"] || 0);
+    p.agilita_attuale = p.agilita_attuale || parseInt(p["Agilita"] || p["Agilità"] || 0);
     p.acume_attuale = p.acume_attuale || parseInt(p["Acume"] || 0);
     p.empatia_attuale = p.empatia_attuale || parseInt(p["Empatia"] || 0);
     // Inizializzazione nuovi valori se non esistono
@@ -97,9 +97,8 @@ function costruisciSchedaHTML(index) {
 
 /* --- HELPER PER I BOTTONI + e - DEGLI ATTRIBUTI --- */
 function generatoreWidgetAttributo(idx, nome, valore) {
-    // Trasformiamo il nome in minuscolo e togliamo l'accento solo per Agilità
-    const campoDinamico = nome.toLowerCase().replace("à", "a") + "_attuale";
-    
+    const campoDinamico = `${nome.toLowerCase()}_attuale`;  
+    //const campoDinamico = label.toLowerCase().replace("à", "a") + "_attuale";  
     return `
         <div class="attribute-item">
             <label>${nome}</label>
