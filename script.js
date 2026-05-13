@@ -6,10 +6,10 @@ const abilitàSuAttributo = {
     "Mischia (Fo)": "Forza",
     "Resistenza (Fo)": "Forza",
     "Vigore (Fo)": "Forza",
-    "Furtività (Ag)": "Agilità",
-    "Mira (Ag)": "Agilità",
-    "Movimento (Ag)": "Agilità",
-    "Rapidità di mano (Ag)": "Agilità",
+    "Furtività (Ag)": "Agilita",
+    "Mira (Ag)": "Agilita",
+    "Movimento (Ag)": "Agilita",
+    "Rapidità di mano (Ag)": "Agilita",
     "Erudizione (Ac)": "Acume",
     "Intuito (Ac)": "Acume",
     "Percezione (Ac)": "Acume",
@@ -46,7 +46,7 @@ function costruisciSchedaHTML(index) {
     // Inizializzazione valori attuali
     // script.js - Intorno alla riga 50
     p.forza_attuale = p.forza_attuale || parseInt(p["Forza"] || 0);
-    p.agilita_attuale = p.agilita_attuale || parseInt(p["Agilita"] || p["Agilità"] || 0);
+    p.agilita_attuale = p.agilita_attuale || parseInt(p["Agilita"] || 0);
     p.acume_attuale = p.acume_attuale || parseInt(p["Acume"] || 0);
     p.empatia_attuale = p.empatia_attuale || parseInt(p["Empatia"] || 0);
     // Inizializzazione nuovi valori se non esistono

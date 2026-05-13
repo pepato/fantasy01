@@ -55,15 +55,18 @@ function generaRigaAbilità(p, nomeAbilità, indexPersonaggio, valoreAbilitaPass
     const nomeAttr = abilitàSuAttributo[nomeAbilità]; 
     
     // Usiamo la stessa identica logica del punto 2
-    const campoAttr = nomeAttr.toLowerCase().replace("à", "a") + "_attuale";
+    // const campoAttr = nomeAttr.toLowerCase().replace("à", "a") + "_attuale";
+    const campoAttr = `${nomeAttr.toLowerCase()}_attuale`;
     const valAttrAttuale = p[campoAttr] || 0;
+    // Se vuoi che nel Log dei dadi compaia l'accento, aggiungiamo una condizione estetica
+    const labelVisualizzata = (nomeAttr === "Agilita") ? "Agilità" : nomeAttr;
 
     return `
         <div class="skill-row">
             <span class="skill-name">${nomeAbilità}</span>
             <div class="skill-right">
                 <span class="skill-value">${valoreAbilitaPassato}</span>
-                <button class="btn-roll-skill" onclick="lanciaPool('${nomeAbilità}', '${nomeAttr}', ${valAttrAttuale}, ${valoreAbilitaPassato})">
+                <button class="btn-roll-skill" onclick="lanciaPool('${nomeAbilità}', '${labelVisualizzata}', ${valAttrAttuale}, ${valoreAbilitaPassato})">
                     🎲
                 </button>
             </div>
