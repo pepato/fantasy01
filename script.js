@@ -44,11 +44,11 @@ function costruisciSchedaHTML(index) {
     const sheet = document.getElementById('character-sheet');
     
     // Inizializzazione valori attuali
-    // script.js - Intorno alla riga 50
-    p.forza_attuale = p.forza_attuale || parseInt(p["Forza"] || 0);
-    p.agilita_attuale = p.agilita_attuale || parseInt(p["Agilita"] || 0);
-    p.acume_attuale = p.acume_attuale || parseInt(p["Acume"] || 0);
-    p.empatia_attuale = p.empatia_attuale || parseInt(p["Empatia"] || 0);
+   
+    if (p.forza_attuale === undefined) p.forza_attuale = parseInt(p["Forza"] || 0);
+    if (p.agilita_attuale === undefined) p.agilita_attuale = parseInt(p["Agilita"] || 0);
+    if (p.acume_attuale === undefined) p.acume_attuale = parseInt(p["Acume"] || 0);
+    if (p.empatia_attuale === undefined) p.empatia_attuale = parseInt(p["Empatia"] || 0);
     // Inizializzazione nuovi valori se non esistono
     p.volonta_attuale = p.volonta_attuale || parseInt(p.Volontà || 0);
     p.esperienza_attuale = p.esperienza_attuale || parseInt(p.Esperienza || 0);
@@ -96,12 +96,13 @@ function costruisciSchedaHTML(index) {
 }
 
 /* --- HELPER PER I BOTTONI + e - DEGLI ATTRIBUTI --- */
-function generatoreWidgetAttributo(idx, nome, valore) {
-    const campoDinamico = `${nome.toLowerCase()}_attuale`;  
-    //const campoDinamico = label.toLowerCase().replace("à", "a") + "_attuale";  
+// Accettiamo 'label' (per lo schermo) e 'techName' (per il codice)
+function generatoreWidgetAttributo(idx, label, techName, valore) {
+    const campoDinamico = `${techName.toLowerCase()}_attuale`;  
+    
     return `
         <div class="attribute-item">
-            <label>${nome}</label>
+            <label>${label}</label>
             <div class="control-group">
                 <button onclick="modificaStat(${idx}, '${campoDinamico}', -1)">-</button>
                 <span>${valore}</span>
@@ -143,10 +144,10 @@ function creaSezioneAttributi(p, index) {
     return `
         <div class="stats-grid">
             <h3>Attributi (Danni/Malus)</h3>
-            ${generatoreWidgetAttributo(index, 'Forza', p.forza_attuale)}
-            ${generatoreWidgetAttributo(index, 'Agilità', p.agilita_attuale)}
-            ${generatoreWidgetAttributo(index, 'Acume', p.acume_attuale)}
-            ${generatoreWidgetAttributo(index, 'Empatia', p.empatia_attuale)}
+            ${generatoreWidgetAttributo(index, 'Forza', 'Forza', p.forza_attuale)}
+            ${generatoreWidgetAttributo(index, 'Agilità', 'Agilita', p.agilita_attuale)} 
+            ${generatoreWidgetAttributo(index, 'Acume', 'Acume', p.acume_attuale)}
+            ${generatoreWidgetAttributo(index, 'Empatia', 'Empatia', p.empatia_attuale)}
         </div>`;
 }
 
