@@ -362,8 +362,8 @@ body {
 }
 
 .soprannome {
-    font-size: italic;
+    font-style: italic;
 }
-.soprannome::after .soprannome::before {
+.soprannome::after, .soprannome::before {
     content: "\"";
 }
