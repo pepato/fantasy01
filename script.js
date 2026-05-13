@@ -103,9 +103,9 @@ function generatoreWidgetAttributo(idx, nome, valore) {
         <div class="attribute-item">
             <label>${nome}</label>
             <div class="control-group">
-                <button onclick="modificaAttributo(${idx}, '${campoDinamico}', -1)">-</button>
+                <button onclick="modificaStat(${idx}, '${campoDinamico}', -1)">-</button>
                 <span>${valore}</span>
-                <button onclick="modificaAttributo(${idx}, '${campoDinamico}', 1)">+</button>
+                <button onclick="modificaStat(${idx}, '${campoDinamico}', 1)">+</button>
             </div>
         </div>
     `;
