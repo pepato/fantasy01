@@ -117,7 +117,7 @@ function modificaStat(index, statName, variazione) {
     const p = personaggi[index];
     const limiteBase = parseInt(p[statName.split('_')[0].charAt(0).toUpperCase() + statName.split('_')[0].slice(1)]); // Trova il valore base dal DB
     
-    let nuovoValore = p[statName] + variazione;
+    let nuovoValore = parseInt(p[statName]) + variazione;
     
     // Impediamo di superare il base o andare sotto lo zero
     if (nuovoValore >= 0 && nuovoValore <= limiteBase) {
