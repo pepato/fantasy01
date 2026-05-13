@@ -10,6 +10,13 @@
     /* Configurazione Roll Effect */
     --roll-speed: 0.8s;
     --roll-easing: cubic-bezier(0.645, 0.045, 0.355, 1); /* Effetto fluido tipo pergamena */
+
+    /* Colori Dadi */
+    --color-base: #ffffff;      /* bianco; */
+    --color-skill: #B71C1C;     /* rosso; */
+    --color-extra: #333;        /* grigio-nero; */
+    --color-fail: #000000;      /* nero */
+    --color-success: #4a7c44;   /* verde */
     
     /* Spaziature */
     --panel-padding: 20px;
@@ -165,8 +172,6 @@ body {
 #character-sheet.is-active strong {
     color: var(--color-accent);
 }
-
-
 
 .header-main {
     display: flex;
@@ -325,13 +330,13 @@ body {
 }
 
 /* Colori specifici dadi */
-.dice-list.base .die { background: #fff; color: #000; border: 2px solid #ccc; }
-.dice-list.abilita .die { background: #333; color: #fff; border: 2px solid #000; }
-.dice-list.extra .die { background: #4a7c44; color: #fff; border: 2px solid #2e4d2b; }
+.dice-list.base .die { background: var(--color-base); color: #000; border: 2px solid #ccc; }
+.dice-list.abilita .die { background: var(--color-skill); color: #fff; border: 2px solid #000; }
+.dice-list.extra .die { background: var(--color-extra); color: #fff; border: 2px solid #000; }
 
 /* Evidenzia 6 e 1 */
-.die.val-6 { background: #f9a825 !important; color: #000 !important; border: 2px solid #000; }
-.dice-list.base .die.val-1 { background: #b71c1c !important; color: #fff !important; }
+.die.val-6 { background: var(--color-success) !important; color: #000 !important; border: 2px solid #000; }
+.dice-list.base .die.val-1 { background: var(--color-fail) !important; color: #b71c1c !important; }
 
 /* Bottoni e Modificatori */
 .btn-clear {
