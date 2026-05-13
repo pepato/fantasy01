@@ -360,3 +360,10 @@ body {
     text-align: center;
     font-size: 1.2em;
 }
+
+.soprannome {
+    font-size: italic;
+}
+.soprannome::after .soprannome::before {
+    content: "\"";
+}
