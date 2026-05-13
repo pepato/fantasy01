@@ -134,7 +134,7 @@ function creaHeaderScheda(p, index) {
         <div class="character-header">
             <button onclick="chiudiScheda()" class="btn-back">⬅ Torna alla lista</button>
             <h2>${p.Nome}</h2>
-            <p><em>"${p.Soprannome}"</em></p>
+            <p class="soprannome">${p.Soprannome}</p>
             <h3>${p.Stirpe} - ${p.Professione}</h3>
         
         </div>`;
